@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>決済完了 - PARC ROOM STUDIO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>PARC ROOM STUDIO</h1>
+      <p class="header-sub">レンタルスタジオ予約</p>
+    </header>
+
+    <section class="step-panel active" id="verifying">
+      <p class="loading">決済を確認中...</p>
+    </section>
+
+    <section class="step-panel" id="successPanel">
+      <div class="complete-icon">✓</div>
+      <h2>予約が完了しました！</h2>
+      <div class="confirm-card" id="details"></div>
+      <p class="complete-note" id="accessNote" style="display:none"></p>
+      <button class="btn btn-primary" onclick="closePage()">閉じる</button>
+    </section>
+
+    <section class="step-panel" id="errorPanel">
+      <h2>エラーが発生しました</h2>
+      <p id="errorMsg" style="color:#e94560;text-align:center;margin:20px 0;"></p>
+      <button class="btn btn-primary" onclick="location.href='index.html'">予約画面に戻る</button>
+    </section>
+  </div>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script>
+    const GAS_WEBAPP_URL = ''; // GASデプロイ後に設定
+    const LIFF_ID = '';
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var params = new URLSearchParams(window.location.search);
+      var sessionId = params.get('session_id');
+      var reservationId = params.get('reservation_id');
+
+      if (!sessionId) {
+        showError('セッション情報がありません');
+        return;
+      }
+
+      if (LIFF_ID) {
+        liff.init({ liffId: LIFF_ID }).catch(function() {});
+      }
+
+      // GAS APIで決済確認＆予約確定
+      callGasApi({ action: 'verify_payment', session_id: sessionId }, function(err, data) {
+        if (err || !data.success) {
+          showError(data ? data.message : '決済の確認に失敗しました');
+          return;
+        }
+        showSuccess(data);
+      });
+    });
+
+    function showSuccess(data) {
+      document.getElementById('verifying').classList.remove('active');
+      document.getElementById('successPanel').classList.add('active');
+
+      var html = '<div class="confirm-row"><span class="label">予約番号</span><span class="value">'
+        + data.reservationId + '</span></div>'
+        + '<div class="confirm-row"><span class="label">利用日</span><span class="value">'
+        + data.date + '</span></div>'
+        + '<div class="confirm-row"><span class="label">時間</span><span class="value">'
+        + data.startTime + ' 〜 ' + data.endTime + '</span></div>'
+        + '<div class="confirm-row"><span class="label">人数</span><span class="value">'
+        + data.people + '名</span></div>'
+        + '<div class="confirm-total"><span>お支払い済</span><span>¥'
+        + data.totalPrice.toLocaleString() + '</span></div>';
+      document.getElementById('details').innerHTML = html;
+
+      if (data.needsAccessCode) {
+        var note = document.getElementById('accessNote');
+        note.innerHTML = '🔑 21:00〜7:00はオートロックです。暗証番号は別途LINEでご案内します。';
+        note.style.display = 'block';
+      }
+
+      // LIFF確認メッセージ送信
+      if (typeof liff !== 'undefined' && liff.isInClient()) {
+        liff.sendMessages([{
+          type: 'text',
+          text: '✅ 決済完了・予約確定！\n\n予約番号: ' + data.reservationId
+            + '\n日時: ' + data.date + ' ' + data.startTime + '-' + data.endTime
+            + '\n金額: ¥' + data.totalPrice.toLocaleString() + '（決済済）'
+        }]).catch(function() {});
+      }
+    }
+
+    function showError(msg) {
+      document.getElementById('verifying').classList.remove('active');
+      document.getElementById('errorPanel').classList.add('active');
+      document.getElementById('errorMsg').textContent = msg;
+    }
+
+    function closePage() {
+      if (typeof liff !== 'undefined' && liff.isInClient()) {
+        liff.closeWindow();
+      } else {
+        window.close();
+      }
+    }
+
+    function callGasApi(params, callback) {
+      var cbName = 'gasCb_' + Date.now();
+      var scriptEl;
+      window[cbName] = function(data) {
+        delete window[cbName];
+        if (scriptEl && scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
+        callback(null, data);
+      };
+      var url = GAS_WEBAPP_URL + '?callback=' + cbName;
+      for (var k in params) url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+      scriptEl = document.createElement('script');
+      scriptEl.src = url;
+      scriptEl.onerror = function() { delete window[cbName]; callback(new Error('通信エラー')); };
+      document.body.appendChild(scriptEl);
+    }
+  </script>
+</body>
+</html>

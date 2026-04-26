@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PARC ROOM STUDIO 予約</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- ヘッダー -->
+    <header class="header">
+      <h1>PARC ROOM STUDIO</h1>
+      <p class="header-sub">レンタルスタジオ予約</p>
+    </header>
+
+    <!-- ステッププログレス -->
+    <div class="progress">
+      <div class="progress-step active" data-step="1">
+        <span class="step-num">1</span><span class="step-label">日時</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step" data-step="2">
+        <span class="step-num">2</span><span class="step-label">時間</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step" data-step="3">
+        <span class="step-num">3</span><span class="step-label">情報</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step" data-step="4">
+        <span class="step-num">4</span><span class="step-label">確認</span>
+      </div>
+    </div>
+
+    <!-- Step 1: 日付選択 -->
+    <section class="step-panel active" id="step1">
+      <h2>利用日を選択</h2>
+      <input type="date" id="dateInput" class="date-input">
+      <div id="dayInfo" class="day-info"></div>
+      <button class="btn btn-primary" onclick="goToStep2()">次へ</button>
+    </section>
+
+    <!-- Step 2: 時間帯・開始時間・利用時間 -->
+    <section class="step-panel" id="step2">
+      <h2>時間帯・利用時間を選択</h2>
+      <div class="field-group">
+        <label>開始時間</label>
+        <div id="slotGrid" class="slot-grid">
+          <p class="loading">読み込み中...</p>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>利用時間</label>
+        <div class="duration-selector">
+          <button class="dur-btn" onclick="changeDuration(-1)">−</button>
+          <span id="durationDisplay">1時間</span>
+          <button class="dur-btn" onclick="changeDuration(1)">＋</button>
+        </div>
+        <p class="slot-range" id="timeRange"></p>
+      </div>
+      <div class="price-display" id="priceDisplay"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goBack(1)">戻る</button>
+        <button class="btn btn-primary" onclick="goToStep3()">次へ</button>
+      </div>
+    </section>
+
+    <!-- Step 3: お客様情報 -->
+    <section class="step-panel" id="step3">
+      <h2>お客様情報</h2>
+      <div class="field-group">
+        <label for="nameInput">お名前 <span class="req">必須</span></label>
+        <input type="text" id="nameInput" placeholder="山田 太郎">
+      </div>
+      <div class="field-group">
+        <label for="phoneInput">電話番号 <span class="req">必須</span></label>
+        <input type="tel" id="phoneInput" placeholder="090-1234-5678">
+      </div>
+      <div class="field-group">
+        <label for="peopleInput">利用人数</label>
+        <select id="peopleInput">
+          <option value="1">1名</option>
+          <option value="2">2名</option>
+          <option value="3">3名</option>
+          <option value="4">4名</option>
+          <option value="5">5名以上</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>お支払い方法</label>
+        <div class="payment-options">
+          <label class="radio-card">
+            <input type="radio" name="payment" value="stripe" checked>
+            <div class="radio-body">
+              <strong>オンライン決済</strong>
+              <span class="badge-coupon">クーポン利用可</span>
+              <small>クレジットカード</small>
+            </div>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="payment" value="onsite">
+            <div class="radio-body">
+              <strong>現地払い</strong>
+              <small>現金 / PayPay</small>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="field-group coupon-area" id="couponArea">
+        <label for="couponInput">クーポンコード</label>
+        <div class="coupon-row">
+          <input type="text" id="couponInput" placeholder="コードを入力">
+          <button class="btn btn-small" onclick="applyCoupon()">適用</button>
+        </div>
+        <p id="couponMessage" class="coupon-msg"></p>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goBack(2)">戻る</button>
+        <button class="btn btn-primary" onclick="goToStep4()">確認へ</button>
+      </div>
+    </section>
+
+    <!-- Step 4: 確認 -->
+    <section class="step-panel" id="step4">
+      <h2>予約内容の確認</h2>
+      <div class="confirm-card" id="confirmDetails"></div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goBack(3)">戻る</button>
+        <button class="btn btn-accent" id="submitBtn" onclick="submitReservation()">予約を確定する</button>
+      </div>
+    </section>
+
+    <!-- 完了画面 -->
+    <section class="step-panel" id="stepComplete">
+      <div class="complete-icon">✓</div>
+      <h2>予約が完了しました！</h2>
+      <div class="confirm-card" id="completeDetails"></div>
+      <p class="complete-note" id="accessNote"></p>
+      <button class="btn btn-primary" onclick="closeLiff()">閉じる</button>
+    </section>
+  </div>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

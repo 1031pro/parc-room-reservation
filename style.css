@@ -1,0 +1,333 @@
+/* PARC ROOM STUDIO 予約フォーム */
+:root {
+  --primary: #1a1a2e;
+  --accent: #e94560;
+  --accent-hover: #d63851;
+  --surface: #ffffff;
+  --surface-alt: #f5f5f8;
+  --text: #1a1a2e;
+  --text-sub: #6b7280;
+  --border: #e5e7eb;
+  --success: #10b981;
+  --radius: 12px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--surface-alt);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+}
+
+.app { max-width: 480px; margin: 0 auto; padding-bottom: 40px; }
+
+/* ヘッダー */
+.header {
+  background: var(--primary);
+  color: white;
+  text-align: center;
+  padding: 20px 16px 16px;
+}
+.header h1 { font-size: 18px; font-weight: 700; letter-spacing: 2px; }
+.header-sub { font-size: 12px; opacity: 0.7; margin-top: 4px; }
+
+/* プログレス */
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px;
+  background: var(--surface);
+  gap: 0;
+}
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--border);
+  color: var(--text-sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.3s;
+}
+.progress-step.active .step-num,
+.progress-step.done .step-num {
+  background: var(--accent);
+  color: white;
+}
+.step-label { font-size: 10px; color: var(--text-sub); }
+.progress-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  margin: 0 4px;
+  margin-bottom: 18px;
+}
+
+/* ステップパネル */
+.step-panel { display: none; padding: 24px 16px; }
+.step-panel.active { display: block; animation: fadeIn 0.3s; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.step-panel h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-left: 4px;
+}
+
+/* フォーム要素 */
+.field-group { margin-bottom: 20px; }
+.field-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+.req { color: var(--accent); font-size: 11px; }
+
+input[type="text"], input[type="tel"], input[type="date"], select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-family: inherit;
+  background: var(--surface);
+  transition: border 0.2s;
+}
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* 日付情報 */
+.day-info {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 13px;
+  border: 1px solid var(--border);
+}
+
+/* スロットグリッド */
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.slot-btn {
+  padding: 10px 4px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+.slot-btn:hover:not(.disabled) { border-color: var(--accent); }
+.slot-btn.selected {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.slot-btn.disabled {
+  background: var(--surface-alt);
+  color: #ccc;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+.slot-btn .slot-price {
+  display: block;
+  font-size: 10px;
+  color: var(--text-sub);
+  margin-top: 2px;
+}
+.slot-btn.selected .slot-price { color: rgba(255,255,255,0.8); }
+
+/* 利用時間セレクター */
+.duration-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 12px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.dur-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.dur-btn:hover { background: var(--accent); color: white; }
+#durationDisplay { font-size: 20px; font-weight: 700; min-width: 80px; text-align: center; }
+.slot-range { text-align: center; font-size: 13px; color: var(--text-sub); margin-top: 8px; }
+
+/* 料金表示 */
+.price-display {
+  background: var(--primary);
+  color: white;
+  padding: 16px;
+  border-radius: var(--radius);
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.price-display .price-amount { font-size: 28px; font-weight: 700; }
+.price-display .price-detail { font-size: 11px; opacity: 0.7; margin-top: 4px; }
+
+/* 支払い選択 */
+.payment-options { display: flex; flex-direction: column; gap: 10px; }
+.radio-card {
+  display: block;
+  cursor: pointer;
+}
+.radio-card input { display: none; }
+.radio-body {
+  padding: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.2s;
+}
+.radio-card input:checked + .radio-body {
+  border-color: var(--accent);
+  background: #fef2f4;
+}
+.radio-body strong { display: block; font-size: 14px; }
+.radio-body small { font-size: 12px; color: var(--text-sub); }
+.badge-coupon {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* クーポン */
+.coupon-row { display: flex; gap: 8px; }
+.coupon-row input { flex: 1; }
+.coupon-msg { font-size: 12px; margin-top: 6px; }
+.coupon-msg.valid { color: var(--success); }
+.coupon-msg.invalid { color: var(--accent); }
+
+/* 確認カード */
+.confirm-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.confirm-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--surface-alt);
+  font-size: 14px;
+}
+.confirm-row:last-child { border-bottom: none; }
+.confirm-row .label { color: var(--text-sub); }
+.confirm-row .value { font-weight: 500; }
+.confirm-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0 0;
+  margin-top: 8px;
+  border-top: 2px solid var(--primary);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ボタン */
+.btn {
+  display: inline-block;
+  padding: 14px 24px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.btn-primary {
+  width: 100%;
+  background: var(--primary);
+  color: white;
+}
+.btn-primary:hover { opacity: 0.9; }
+.btn-accent {
+  width: 100%;
+  background: var(--accent);
+  color: white;
+}
+.btn-accent:hover { background: var(--accent-hover); }
+.btn-secondary {
+  background: transparent;
+  color: var(--text-sub);
+  border: 1.5px solid var(--border);
+}
+.btn-small {
+  padding: 10px 16px;
+  font-size: 13px;
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+}
+.btn-row { display: flex; gap: 12px; }
+.btn-row .btn-primary, .btn-row .btn-accent { flex: 1; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* 完了画面 */
+.complete-icon {
+  width: 64px; height: 64px;
+  background: var(--success);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin: 0 auto 16px;
+}
+.complete-note {
+  background: #fef3c7;
+  padding: 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  margin-bottom: 20px;
+  border: 1px solid #fbbf24;
+}
+
+.loading { text-align: center; color: var(--text-sub); padding: 20px; }

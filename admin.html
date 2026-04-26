@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PARC ROOM 管理画面</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --primary:#1a1a2e; --accent:#e94560; --success:#10b981; --border:#e5e7eb; --bg:#f5f5f8; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Noto Sans JP',sans-serif; background:var(--bg); color:#1a1a2e; }
+    .container { max-width:800px; margin:0 auto; padding:20px 16px; }
+    h1 { font-size:20px; margin-bottom:20px; }
+    .login-form { background:white; padding:24px; border-radius:12px; margin-bottom:20px; }
+    .login-form input { padding:10px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; width:200px; }
+    .login-form button { padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:8px; font-size:14px; cursor:pointer; margin-left:8px; }
+    .card { background:white; border-radius:12px; padding:16px; margin-bottom:12px; border:1px solid var(--border); }
+    .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .card-header h3 { font-size:15px; }
+    .badge { padding:3px 10px; border-radius:10px; font-size:11px; font-weight:700; }
+    .badge-confirmed { background:#d1fae5; color:#065f46; }
+    .badge-cancelled { background:#fee2e2; color:#991b1b; }
+    .badge-onsite { background:#fef3c7; color:#92400e; }
+    .card-body { font-size:13px; color:#6b7280; line-height:1.8; }
+    .card-actions { margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
+    .cancel-area { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .cancel-area label { font-size:12px; color:#6b7280; }
+    .cancel-area input[type="datetime-local"] { padding:6px 10px; border:1px solid var(--border); border-radius:6px; font-size:12px; }
+    .btn-cancel { padding:8px 16px; background:var(--accent); color:white; border:none; border-radius:8px; font-size:13px; cursor:pointer; }
+    .btn-cancel:disabled { opacity:0.5; cursor:not-allowed; }
+    .refund-info { font-size:12px; color:var(--accent); margin-top:6px; }
+    .empty { text-align:center; color:#6b7280; padding:40px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🏢 PARC ROOM 予約管理</h1>
+
+    <div class="login-form" id="loginForm">
+      <input type="password" id="adminKey" placeholder="管理キー">
+      <button onclick="loadReservations()">ログイン</button>
+    </div>
+
+    <div id="reservationList"></div>
+  </div>
+
+  <script>
+    const GAS_WEBAPP_URL = ''; // GASデプロイ後に設定
+
+    function callApi(params, callback) {
+      var cbName = 'cb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+      var scriptEl;
+      window[cbName] = function(data) {
+        delete window[cbName];
+        if (scriptEl && scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
+        callback(null, data);
+      };
+      var url = GAS_WEBAPP_URL + '?callback=' + cbName;
+      for (var k in params) url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+      scriptEl = document.createElement('script');
+      scriptEl.src = url;
+      scriptEl.onerror = function() { delete window[cbName]; callback(new Error('通信エラー')); };
+      document.body.appendChild(scriptEl);
+    }
+
+    function loadReservations() {
+      var key = document.getElementById('adminKey').value;
+      if (!key) return;
+
+      callApi({ action: 'admin_list', key: key }, function(err, data) {
+        if (err || data.error) {
+          alert(data ? data.error : 'エラー');
+          return;
+        }
+        document.getElementById('loginForm').style.display = 'none';
+        renderList(data.reservations, key);
+      });
+    }
+
+    function renderList(reservations, key) {
+      var container = document.getElementById('reservationList');
+      if (!reservations.length) {
+        container.innerHTML = '<div class="empty">予約がありません</div>';
+        return;
+      }
+
+      container.innerHTML = reservations.map(function(r) {
+        var isCancelled = r.status === 'キャンセル';
+        var isStripe = r.payment === 'オンライン決済';
+        var badgeClass = isCancelled ? 'badge-cancelled' : 'badge-confirmed';
+        var now = new Date();
+        var nowStr = now.getFullYear() + '-' + ('0'+(now.getMonth()+1)).slice(-2) + '-'
+          + ('0'+now.getDate()).slice(-2) + 'T' + ('0'+now.getHours()).slice(-2)
+          + ':' + ('0'+now.getMinutes()).slice(-2);
+
+        var html = '<div class="card">'
+          + '<div class="card-header"><h3>' + r.reservationId + '</h3>'
+          + '<span class="badge ' + badgeClass + '">' + r.status + '</span></div>'
+          + '<div class="card-body">'
+          + '📅 ' + r.date + ' ' + r.startTime + '〜 (' + r.duration + 'h)<br>'
+          + '👤 ' + r.name + ' / ' + r.people + '名<br>'
+          + '📞 ' + r.phone + '<br>'
+          + '💰 ¥' + Number(r.price).toLocaleString() + ' / '
+          + r.payment + (isStripe ? ' <span class="badge badge-confirmed">決済済</span>' : ' <span class="badge badge-onsite">現地払い</span>')
+          + '</div>';
+
+        if (!isCancelled) {
+          html += '<div class="card-actions"><div class="cancel-area">'
+            + '<label>キャンセル受付時刻:</label>'
+            + '<input type="datetime-local" id="cancelTime_' + r.reservationId + '" value="' + nowStr + '">'
+            + '<button class="btn-cancel" onclick="cancelReservation(\'' + r.reservationId + '\',\'' + key + '\')">キャンセル処理</button>'
+            + '</div>';
+
+          // 返金シミュレーション表示
+          if (isStripe) {
+            var reservationDate = new Date(r.date + 'T00:00:00');
+            var diffDays = Math.floor((reservationDate - now) / (1000*60*60*24));
+            var refundMsg = diffDays >= 3 ? '全額返金' : (diffDays >= 1 ? '50%返金（¥' + Math.floor(r.price*0.5).toLocaleString() + '）' : '返金なし（当日）');
+            html += '<div class="refund-info">⚠️ 現時点での返金: ' + refundMsg + '</div>';
+          }
+          html += '</div>';
+        }
+
+        return html + '</div>';
+      }).join('');
+    }
+
+    function cancelReservation(reservationId, key) {
+      if (!confirm(reservationId + ' をキャンセルしますか？')) return;
+
+      var timeInput = document.getElementById('cancelTime_' + reservationId);
+      var requestTime = timeInput ? timeInput.value : '';
+
+      callApi({
+        action: 'admin_cancel',
+        key: key,
+        reservation_id: reservationId,
+        request_time: requestTime
+      }, function(err, data) {
+        if (err || data.error) {
+          alert(data ? data.error : 'エラー');
+          return;
+        }
+        var msg = 'キャンセル完了: ' + reservationId;
+        if (data.refund) msg += '\n返金: ' + data.refund.message + (data.refund.amount > 0 ? ' (¥' + data.refund.amount.toLocaleString() + ')' : '');
+        alert(msg);
+        loadReservations();
+      });
+    }
+  </script>
+</body>
+</html>
