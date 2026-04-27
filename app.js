@@ -3,7 +3,7 @@
  */
 
 // --- 設定 ---
-const GAS_WEBAPP_URL = ''; // GASデプロイ後に設定
+const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwt76pCcT-0TVbstoPw7zeM-nd7kvIGK18Mcrd3PM3nuHvODyhdNNgX6TxlkJDbp4WD/exec';
 const LIFF_ID = '2009890948-YwXjSlGC';
 
 const PRICING = { weekday: 500, weekend: 600, midnight: 200 };
