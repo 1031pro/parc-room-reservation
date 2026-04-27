@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PARC ROOM 管理画面</title>
+  <title>PARC ROOM 邂｡逅・判髱｢</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root { --primary:#1a1a2e; --accent:#e94560; --success:#10b981; --border:#e5e7eb; --bg:#f5f5f8; }
@@ -34,18 +34,18 @@
 </head>
 <body>
   <div class="container">
-    <h1>🏢 PARC ROOM 予約管理</h1>
+    <h1>召 PARC ROOM 莠育ｴ・ｮ｡逅・/h1>
 
     <div class="login-form" id="loginForm">
-      <input type="password" id="adminKey" placeholder="管理キー">
-      <button onclick="loadReservations()">ログイン</button>
+      <input type="password" id="adminKey" placeholder="邂｡逅・く繝ｼ">
+      <button onclick="loadReservations()">繝ｭ繧ｰ繧､繝ｳ</button>
     </div>
 
     <div id="reservationList"></div>
   </div>
 
   <script>
-    const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwt76pCcT-0TVbstoPw7zeM-nd7kvIGK18Mcrd3PM3nuHvODyhdNNgX6TxlkJDbp4WD/exec';
+    const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycby9vmLoZ7lm6jLs9aihQrURqWMeGjDtUDyKFypOAPkJU7st_4x8kmdFx-qf-OSqEA5d/exec';
 
     function callApi(params, callback) {
       var cbName = 'cb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
@@ -59,7 +59,7 @@
       for (var k in params) url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
       scriptEl = document.createElement('script');
       scriptEl.src = url;
-      scriptEl.onerror = function() { delete window[cbName]; callback(new Error('通信エラー')); };
+      scriptEl.onerror = function() { delete window[cbName]; callback(new Error('騾壻ｿ｡繧ｨ繝ｩ繝ｼ')); };
       document.body.appendChild(scriptEl);
     }
 
@@ -69,7 +69,7 @@
 
       callApi({ action: 'admin_list', key: key }, function(err, data) {
         if (err || data.error) {
-          alert(data ? data.error : 'エラー');
+          alert(data ? data.error : '繧ｨ繝ｩ繝ｼ');
           return;
         }
         document.getElementById('loginForm').style.display = 'none';
@@ -80,13 +80,13 @@
     function renderList(reservations, key) {
       var container = document.getElementById('reservationList');
       if (!reservations.length) {
-        container.innerHTML = '<div class="empty">予約がありません</div>';
+        container.innerHTML = '<div class="empty">莠育ｴ・′縺ゅｊ縺ｾ縺帙ｓ</div>';
         return;
       }
 
       container.innerHTML = reservations.map(function(r) {
-        var isCancelled = r.status === 'キャンセル';
-        var isStripe = r.payment === 'オンライン決済';
+        var isCancelled = r.status === '繧ｭ繝｣繝ｳ繧ｻ繝ｫ';
+        var isStripe = r.payment === '繧ｪ繝ｳ繝ｩ繧､繝ｳ豎ｺ貂・;
         var badgeClass = isCancelled ? 'badge-cancelled' : 'badge-confirmed';
         var now = new Date();
         var nowStr = now.getFullYear() + '-' + ('0'+(now.getMonth()+1)).slice(-2) + '-'
@@ -97,26 +97,26 @@
           + '<div class="card-header"><h3>' + r.reservationId + '</h3>'
           + '<span class="badge ' + badgeClass + '">' + r.status + '</span></div>'
           + '<div class="card-body">'
-          + '📅 ' + r.date + ' ' + r.startTime + '〜 (' + r.duration + 'h)<br>'
-          + '👤 ' + r.name + ' / ' + r.people + '名<br>'
-          + '📞 ' + r.phone + '<br>'
-          + '💰 ¥' + Number(r.price).toLocaleString() + ' / '
-          + r.payment + (isStripe ? ' <span class="badge badge-confirmed">決済済</span>' : ' <span class="badge badge-onsite">現地払い</span>')
+          + '套 ' + r.date + ' ' + r.startTime + '縲・(' + r.duration + 'h)<br>'
+          + '側 ' + r.name + ' / ' + r.people + '蜷・br>'
+          + '到 ' + r.phone + '<br>'
+          + '腸 ﾂ･' + Number(r.price).toLocaleString() + ' / '
+          + r.payment + (isStripe ? ' <span class="badge badge-confirmed">豎ｺ貂域ｸ・/span>' : ' <span class="badge badge-onsite">迴ｾ蝨ｰ謇輔＞</span>')
           + '</div>';
 
         if (!isCancelled) {
           html += '<div class="card-actions"><div class="cancel-area">'
-            + '<label>キャンセル受付時刻:</label>'
+            + '<label>繧ｭ繝｣繝ｳ繧ｻ繝ｫ蜿嶺ｻ俶凾蛻ｻ:</label>'
             + '<input type="datetime-local" id="cancelTime_' + r.reservationId + '" value="' + nowStr + '">'
-            + '<button class="btn-cancel" onclick="cancelReservation(\'' + r.reservationId + '\',\'' + key + '\')">キャンセル処理</button>'
+            + '<button class="btn-cancel" onclick="cancelReservation(\'' + r.reservationId + '\',\'' + key + '\')">繧ｭ繝｣繝ｳ繧ｻ繝ｫ蜃ｦ逅・/button>'
             + '</div>';
 
-          // 返金シミュレーション表示
+          // 霑秘≡繧ｷ繝溘Η繝ｬ繝ｼ繧ｷ繝ｧ繝ｳ陦ｨ遉ｺ
           if (isStripe) {
             var reservationDate = new Date(r.date + 'T00:00:00');
             var diffDays = Math.floor((reservationDate - now) / (1000*60*60*24));
-            var refundMsg = diffDays >= 3 ? '全額返金' : (diffDays >= 1 ? '50%返金（¥' + Math.floor(r.price*0.5).toLocaleString() + '）' : '返金なし（当日）');
-            html += '<div class="refund-info">⚠️ 現時点での返金: ' + refundMsg + '</div>';
+            var refundMsg = diffDays >= 3 ? '蜈ｨ鬘崎ｿ秘≡' : (diffDays >= 1 ? '50%霑秘≡・按･' + Math.floor(r.price*0.5).toLocaleString() + '・・ : '霑秘≡縺ｪ縺暦ｼ亥ｽ捺律・・);
+            html += '<div class="refund-info">笞・・迴ｾ譎らせ縺ｧ縺ｮ霑秘≡: ' + refundMsg + '</div>';
           }
           html += '</div>';
         }
@@ -126,7 +126,7 @@
     }
 
     function cancelReservation(reservationId, key) {
-      if (!confirm(reservationId + ' をキャンセルしますか？')) return;
+      if (!confirm(reservationId + ' 繧偵く繝｣繝ｳ繧ｻ繝ｫ縺励∪縺吶°・・)) return;
 
       var timeInput = document.getElementById('cancelTime_' + reservationId);
       var requestTime = timeInput ? timeInput.value : '';
@@ -138,11 +138,11 @@
         request_time: requestTime
       }, function(err, data) {
         if (err || data.error) {
-          alert(data ? data.error : 'エラー');
+          alert(data ? data.error : '繧ｨ繝ｩ繝ｼ');
           return;
         }
-        var msg = 'キャンセル完了: ' + reservationId;
-        if (data.refund) msg += '\n返金: ' + data.refund.message + (data.refund.amount > 0 ? ' (¥' + data.refund.amount.toLocaleString() + ')' : '');
+        var msg = '繧ｭ繝｣繝ｳ繧ｻ繝ｫ螳御ｺ・ ' + reservationId;
+        if (data.refund) msg += '\n霑秘≡: ' + data.refund.message + (data.refund.amount > 0 ? ' (ﾂ･' + data.refund.amount.toLocaleString() + ')' : '');
         alert(msg);
         loadReservations();
       });

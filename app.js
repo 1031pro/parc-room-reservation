@@ -1,18 +1,18 @@
-/**
- * PARC ROOM STUDIO - 予約フォーム JavaScript
+﻿/**
+ * PARC ROOM STUDIO - 莠育ｴ・ヵ繧ｩ繝ｼ繝 JavaScript
  */
 
-// --- 設定 ---
-const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwt76pCcT-0TVbstoPw7zeM-nd7kvIGK18Mcrd3PM3nuHvODyhdNNgX6TxlkJDbp4WD/exec';
+// --- 險ｭ螳・---
+const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycby9vmLoZ7lm6jLs9aihQrURqWMeGjDtUDyKFypOAPkJU7st_4x8kmdFx-qf-OSqEA5d/exec';
 const LIFF_ID = '2009890948-YwXjSlGC';
 
 const PRICING = { weekday: 500, weekend: 600, midnight: 200 };
 const MIN_SLOTS = 2;
 const MAX_SLOTS = 10;
 const SLOT_MINUTES = 30;
-const DAY_NAMES = ['日', '月', '火', '水', '木', '金', '土'];
+const DAY_NAMES = ['譌･', '譛・, '轣ｫ', '豌ｴ', '譛ｨ', '驥・, '蝨・];
 
-// --- 状態管理 ---
+// --- 迥ｶ諷狗ｮ｡逅・---
 let state = {
   currentStep: 1,
   date: '',
@@ -33,7 +33,7 @@ let state = {
   userId: ''
 };
 
-// --- LIFF初期化 ---
+// --- LIFF蛻晄悄蛹・---
 document.addEventListener('DOMContentLoaded', function() {
   if (LIFF_ID) {
     liff.init({ liffId: LIFF_ID }).then(function() {
@@ -43,15 +43,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }).catch(function(err) { console.warn('LIFF init error:', err); });
   }
 
-  // 日付の初期値（明日）
-  var tomorrow = new Date();
+  // 譌･莉倥・蛻晄悄蛟､・域・譌･・・  var tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   var dateInput = document.getElementById('dateInput');
   dateInput.min = formatDate(tomorrow);
   dateInput.value = formatDate(tomorrow);
   dateInput.addEventListener('change', onDateChange);
 
-  // 支払い方法の切替
+  // 謾ｯ謇輔＞譁ｹ豕輔・蛻・崛
   document.querySelectorAll('input[name="payment"]').forEach(function(r) {
     r.addEventListener('change', onPaymentChange);
   });
@@ -64,8 +63,7 @@ function formatDate(d) {
 }
 
 // ============================================================
-// JSONP API呼び出し
-// ============================================================
+// JSONP API蜻ｼ縺ｳ蜃ｺ縺・// ============================================================
 function callGasApi(params, callback) {
   var cbName = 'gasCb_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
   var scriptEl;
@@ -86,13 +84,13 @@ function callGasApi(params, callback) {
   scriptEl.onerror = function() {
     delete window[cbName];
     if (scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
-    callback(new Error('API通信エラー'));
+    callback(new Error('API騾壻ｿ｡繧ｨ繝ｩ繝ｼ'));
   };
   document.body.appendChild(scriptEl);
 }
 
 // ============================================================
-// ステップ遷移
+// 繧ｹ繝・ャ繝鈴・遘ｻ
 // ============================================================
 function showStep(n) {
   document.querySelectorAll('.step-panel').forEach(function(p) { p.classList.remove('active'); });
@@ -111,8 +109,7 @@ function showStep(n) {
 function goBack(toStep) { showStep(toStep); }
 
 // ============================================================
-// Step 1: 日付選択
-// ============================================================
+// Step 1: 譌･莉倬∈謚・// ============================================================
 function onDateChange() {
   var dateStr = document.getElementById('dateInput').value;
   if (!dateStr) return;
@@ -121,35 +118,35 @@ function onDateChange() {
   state.dayOfWeek = d.getDay();
 
   var isWeekend = (state.dayOfWeek === 0 || state.dayOfWeek === 6);
-  var dayType = isWeekend ? '土日' : '平日';
+  var dayType = isWeekend ? '蝨滓律' : '蟷ｳ譌･';
   var info = document.getElementById('dayInfo');
-  info.innerHTML = '<strong>' + dateStr + '（' + DAY_NAMES[state.dayOfWeek] + '）' + dayType + '</strong><br>'
-    + '通常時間帯(8:00-24:00): ¥' + (isWeekend ? '1,200' : '1,000') + '/時間<br>'
-    + '深夜早朝(0:00-8:00): ¥400/時間';
+  info.innerHTML = '<strong>' + dateStr + '・・ + DAY_NAMES[state.dayOfWeek] + '・・ + dayType + '</strong><br>'
+    + '騾壼ｸｸ譎る俣蟶ｯ(8:00-24:00): ﾂ･' + (isWeekend ? '1,200' : '1,000') + '/譎る俣<br>'
+    + '豺ｱ螟懈掠譛・0:00-8:00): ﾂ･400/譎る俣';
 }
 
 function goToStep2() {
-  if (!state.date) { alert('日付を選択してください'); return; }
+  if (!state.date) { alert('譌･莉倥ｒ驕ｸ謚槭＠縺ｦ縺上□縺輔＞'); return; }
   showStep(2);
   loadSlots();
 }
 
 // ============================================================
-// Step 2: 時間・利用時間
+// Step 2: 譎る俣繝ｻ蛻ｩ逕ｨ譎る俣
 // ============================================================
 function loadSlots() {
   var grid = document.getElementById('slotGrid');
-  grid.innerHTML = '<p class="loading">読み込み中...</p>';
+  grid.innerHTML = '<p class="loading">隱ｭ縺ｿ霎ｼ縺ｿ荳ｭ...</p>';
 
   if (!GAS_WEBAPP_URL) {
-    // GAS未設定時：ローカルデモ用
+    // GAS譛ｪ險ｭ螳壽凾・壹Ο繝ｼ繧ｫ繝ｫ繝・Δ逕ｨ
     renderSlotsLocal();
     return;
   }
 
   callGasApi({ action: 'slots', date: state.date }, function(err, data) {
     if (err || data.error) {
-      grid.innerHTML = '<p class="loading">エラーが発生しました</p>';
+      grid.innerHTML = '<p class="loading">繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆</p>';
       return;
     }
     state.slots = data.slots;
@@ -158,7 +155,7 @@ function loadSlots() {
 }
 
 function renderSlotsLocal() {
-  // デモ用：全枠を空きとして生成
+  // 繝・Δ逕ｨ・壼・譫繧堤ｩｺ縺阪→縺励※逕滓・
   state.slots = [];
   var d = new Date(state.date + 'T00:00:00');
   for (var t = 0; t < 24 * 60; t += SLOT_MINUTES) {
@@ -183,7 +180,7 @@ function renderSlots() {
   state.slots.forEach(function(slot) {
     var btn = document.createElement('button');
     btn.className = 'slot-btn' + (slot.available ? '' : ' disabled');
-    btn.innerHTML = slot.time + '<span class="slot-price">¥' + slot.pricePerSlot + '</span>';
+    btn.innerHTML = slot.time + '<span class="slot-price">ﾂ･' + slot.pricePerSlot + '</span>';
     if (slot.available) {
       btn.onclick = function() { selectSlot(slot); };
     }
@@ -196,8 +193,7 @@ function selectSlot(slot) {
   state.selectedStartTime = slot.time;
 
   document.querySelectorAll('.slot-btn').forEach(function(b) { b.classList.remove('selected'); });
-  // 選択範囲をハイライト
-  updateSlotHighlight();
+  // 驕ｸ謚樒ｯ・峇繧偵ワ繧､繝ｩ繧､繝・  updateSlotHighlight();
   updatePriceDisplay();
 }
 
@@ -206,7 +202,7 @@ function changeDuration(delta) {
   if (newCount < MIN_SLOTS || newCount > MAX_SLOTS) return;
   state.slotCount = newCount;
   document.getElementById('durationDisplay').textContent =
-    (newCount * SLOT_MINUTES / 60) + '時間';
+    (newCount * SLOT_MINUTES / 60) + '譎る俣';
   updateSlotHighlight();
   updatePriceDisplay();
 }
@@ -225,7 +221,7 @@ function updateSlotHighlight() {
 
   var endMin = state.selectedStartMinutes + (state.slotCount * SLOT_MINUTES);
   var endStr = ('0' + Math.floor(endMin / 60)).slice(-2) + ':' + ('0' + (endMin % 60)).slice(-2);
-  document.getElementById('timeRange').textContent = state.selectedStartTime + ' 〜 ' + endStr;
+  document.getElementById('timeRange').textContent = state.selectedStartTime + ' 縲・' + endStr;
 }
 
 function updatePriceDisplay() {
@@ -242,26 +238,26 @@ function updatePriceDisplay() {
   state.finalPrice = total;
 
   var el = document.getElementById('priceDisplay');
-  el.innerHTML = '<div class="price-amount">¥' + total.toLocaleString() + '</div>'
-    + '<div class="price-detail">' + (state.slotCount * SLOT_MINUTES / 60) + '時間 × 料金</div>';
+  el.innerHTML = '<div class="price-amount">ﾂ･' + total.toLocaleString() + '</div>'
+    + '<div class="price-detail">' + (state.slotCount * SLOT_MINUTES / 60) + '譎る俣 ﾃ・譁咎≡</div>';
 }
 
 function goToStep3() {
-  if (state.selectedStartMinutes < 0) { alert('開始時間を選択してください'); return; }
-  // 選択範囲に予約済み枠がないかチェック
+  if (state.selectedStartMinutes < 0) { alert('髢句ｧ区凾髢薙ｒ驕ｸ謚槭＠縺ｦ縺上□縺輔＞'); return; }
+  // 驕ｸ謚樒ｯ・峇縺ｫ莠育ｴ・ｸ医∩譫縺後↑縺・°繝√ぉ繝・け
   for (var i = 0; i < state.slotCount; i++) {
     var idx = state.slots.findIndex(function(s) {
       return s.minutes === state.selectedStartMinutes + (i * SLOT_MINUTES);
     });
     if (idx >= 0 && !state.slots[idx].available) {
-      alert('選択した時間帯に予約済みの枠が含まれています'); return;
+      alert('驕ｸ謚槭＠縺滓凾髢灘ｸｯ縺ｫ莠育ｴ・ｸ医∩縺ｮ譫縺悟性縺ｾ繧後※縺・∪縺・); return;
     }
   }
   showStep(3);
 }
 
 // ============================================================
-// Step 3: お客様情報
+// Step 3: 縺雁ｮ｢讒俶ュ蝣ｱ
 // ============================================================
 function onPaymentChange() {
   state.payment = document.querySelector('input[name="payment"]:checked').value;
@@ -281,15 +277,15 @@ function applyCoupon() {
   var msg = document.getElementById('couponMessage');
 
   if (!GAS_WEBAPP_URL) {
-    // ローカルデモ用
-    msg.textContent = 'GAS未接続のためクーポン検証をスキップ';
+    // 繝ｭ繝ｼ繧ｫ繝ｫ繝・Δ逕ｨ
+    msg.textContent = 'GAS譛ｪ謗･邯壹・縺溘ａ繧ｯ繝ｼ繝昴Φ讀懆ｨｼ繧偵せ繧ｭ繝・・';
     msg.className = 'coupon-msg invalid';
     return;
   }
 
   callGasApi({ action: 'validate_coupon', code: code }, function(err, data) {
     if (err || !data.valid) {
-      msg.textContent = data ? data.message : 'エラー';
+      msg.textContent = data ? data.message : '繧ｨ繝ｩ繝ｼ';
       msg.className = 'coupon-msg invalid';
       state.couponValid = false;
       state.finalPrice = state.totalPrice;
@@ -305,7 +301,7 @@ function applyCoupon() {
     }
     state.discount = discount;
     state.finalPrice = state.totalPrice - discount;
-    msg.textContent = '✓ ' + data.description + '（-¥' + discount.toLocaleString() + '）';
+    msg.textContent = '笨・' + data.description + '・・ﾂ･' + discount.toLocaleString() + '・・;
     msg.className = 'coupon-msg valid';
   });
 }
@@ -315,55 +311,54 @@ function goToStep4() {
   state.phone = document.getElementById('phoneInput').value.trim();
   state.people = document.getElementById('peopleInput').value;
 
-  if (!state.name) { alert('お名前を入力してください'); return; }
-  if (!state.phone) { alert('電話番号を入力してください'); return; }
+  if (!state.name) { alert('縺雁錐蜑阪ｒ蜈･蜉帙＠縺ｦ縺上□縺輔＞'); return; }
+  if (!state.phone) { alert('髮ｻ隧ｱ逡ｪ蜿ｷ繧貞・蜉帙＠縺ｦ縺上□縺輔＞'); return; }
 
   renderConfirmation();
   showStep(4);
 }
 
 // ============================================================
-// Step 4: 確認・予約確定
-// ============================================================
+// Step 4: 遒ｺ隱阪・莠育ｴ・｢ｺ螳・// ============================================================
 function renderConfirmation() {
   var endMin = state.selectedStartMinutes + (state.slotCount * SLOT_MINUTES);
   var endStr = ('0' + Math.floor(endMin / 60)).slice(-2) + ':' + ('0' + (endMin % 60)).slice(-2);
   var duration = state.slotCount * SLOT_MINUTES / 60;
 
-  var html = '<div class="confirm-row"><span class="label">利用日</span><span class="value">'
-    + state.date + '（' + DAY_NAMES[state.dayOfWeek] + '）</span></div>'
-    + '<div class="confirm-row"><span class="label">時間</span><span class="value">'
-    + state.selectedStartTime + ' 〜 ' + endStr + '（' + duration + '時間）</span></div>'
-    + '<div class="confirm-row"><span class="label">人数</span><span class="value">'
-    + state.people + '名</span></div>'
-    + '<div class="confirm-row"><span class="label">お名前</span><span class="value">'
+  var html = '<div class="confirm-row"><span class="label">蛻ｩ逕ｨ譌･</span><span class="value">'
+    + state.date + '・・ + DAY_NAMES[state.dayOfWeek] + '・・/span></div>'
+    + '<div class="confirm-row"><span class="label">譎る俣</span><span class="value">'
+    + state.selectedStartTime + ' 縲・' + endStr + '・・ + duration + '譎る俣・・/span></div>'
+    + '<div class="confirm-row"><span class="label">莠ｺ謨ｰ</span><span class="value">'
+    + state.people + '蜷・/span></div>'
+    + '<div class="confirm-row"><span class="label">縺雁錐蜑・/span><span class="value">'
     + state.name + '</span></div>'
-    + '<div class="confirm-row"><span class="label">電話番号</span><span class="value">'
+    + '<div class="confirm-row"><span class="label">髮ｻ隧ｱ逡ｪ蜿ｷ</span><span class="value">'
     + state.phone + '</span></div>'
-    + '<div class="confirm-row"><span class="label">お支払い</span><span class="value">'
-    + (state.payment === 'stripe' ? 'オンライン決済' : '現地払い') + '</span></div>';
+    + '<div class="confirm-row"><span class="label">縺頑髪謇輔＞</span><span class="value">'
+    + (state.payment === 'stripe' ? '繧ｪ繝ｳ繝ｩ繧､繝ｳ豎ｺ貂・ : '迴ｾ蝨ｰ謇輔＞') + '</span></div>';
 
   if (state.couponValid && state.discount > 0) {
-    html += '<div class="confirm-row"><span class="label">クーポン</span><span class="value">-¥'
+    html += '<div class="confirm-row"><span class="label">繧ｯ繝ｼ繝昴Φ</span><span class="value">-ﾂ･'
       + state.discount.toLocaleString() + '</span></div>';
   }
 
-  html += '<div class="confirm-total"><span>合計</span><span>¥'
+  html += '<div class="confirm-total"><span>蜷郁ｨ・/span><span>ﾂ･'
     + state.finalPrice.toLocaleString() + '</span></div>';
 
   document.getElementById('confirmDetails').innerHTML = html;
 
   var btn = document.getElementById('submitBtn');
-  btn.textContent = state.payment === 'stripe' ? '決済に進む' : '予約を確定する';
+  btn.textContent = state.payment === 'stripe' ? '豎ｺ貂医↓騾ｲ繧' : '莠育ｴ・ｒ遒ｺ螳壹☆繧・;
 }
 
 function submitReservation() {
   var btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.textContent = '処理中...';
+  btn.textContent = '蜃ｦ逅・ｸｭ...';
 
   if (!GAS_WEBAPP_URL) {
-    // ローカルデモ
+    // 繝ｭ繝ｼ繧ｫ繝ｫ繝・Δ
     setTimeout(function() { showComplete({ reservationId: 'PR_DEMO', needsAccessCode: false }); }, 1000);
     return;
   }
@@ -383,12 +378,12 @@ function submitReservation() {
     params.coupon = state.coupon;
     callGasApi(params, function(err, data) {
       if (err || !data.success) {
-        alert(data ? data.message : 'エラーが発生しました');
+        alert(data ? data.message : '繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆');
         btn.disabled = false;
-        btn.textContent = '決済に進む';
+        btn.textContent = '豎ｺ貂医↓騾ｲ繧';
         return;
       }
-      // Stripe Checkoutページへ遷移
+      // Stripe Checkout繝壹・繧ｸ縺ｸ驕ｷ遘ｻ
       window.location.href = data.checkoutUrl;
     });
   } else {
@@ -396,9 +391,9 @@ function submitReservation() {
     params.payment = 'onsite';
     callGasApi(params, function(err, data) {
       if (err || !data.success) {
-        alert(data ? data.message : 'エラーが発生しました');
+        alert(data ? data.message : '繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆');
         btn.disabled = false;
-        btn.textContent = '予約を確定する';
+        btn.textContent = '莠育ｴ・ｒ遒ｺ螳壹☆繧・;
         return;
       }
       showComplete(data);
@@ -408,29 +403,29 @@ function submitReservation() {
 }
 
 // ============================================================
-// 完了画面
+// 螳御ｺ・判髱｢
 // ============================================================
 function showComplete(data) {
   var endMin = state.selectedStartMinutes + (state.slotCount * SLOT_MINUTES);
   var endStr = ('0' + Math.floor(endMin / 60)).slice(-2) + ':' + ('0' + (endMin % 60)).slice(-2);
   var duration = state.slotCount * SLOT_MINUTES / 60;
 
-  var html = '<div class="confirm-row"><span class="label">予約番号</span><span class="value">'
+  var html = '<div class="confirm-row"><span class="label">莠育ｴ・分蜿ｷ</span><span class="value">'
     + data.reservationId + '</span></div>'
-    + '<div class="confirm-row"><span class="label">利用日</span><span class="value">'
-    + state.date + '（' + DAY_NAMES[state.dayOfWeek] + '）</span></div>'
-    + '<div class="confirm-row"><span class="label">時間</span><span class="value">'
-    + state.selectedStartTime + ' 〜 ' + endStr + '</span></div>'
-    + '<div class="confirm-row"><span class="label">人数</span><span class="value">'
-    + state.people + '名</span></div>'
-    + '<div class="confirm-total"><span>合計</span><span>¥'
+    + '<div class="confirm-row"><span class="label">蛻ｩ逕ｨ譌･</span><span class="value">'
+    + state.date + '・・ + DAY_NAMES[state.dayOfWeek] + '・・/span></div>'
+    + '<div class="confirm-row"><span class="label">譎る俣</span><span class="value">'
+    + state.selectedStartTime + ' 縲・' + endStr + '</span></div>'
+    + '<div class="confirm-row"><span class="label">莠ｺ謨ｰ</span><span class="value">'
+    + state.people + '蜷・/span></div>'
+    + '<div class="confirm-total"><span>蜷郁ｨ・/span><span>ﾂ･'
     + state.finalPrice.toLocaleString() + '</span></div>';
 
   document.getElementById('completeDetails').innerHTML = html;
 
   var note = document.getElementById('accessNote');
   if (data.needsAccessCode) {
-    note.innerHTML = '🔑 21:00〜7:00のご利用はオートロックとなります。<br>暗証番号は別途LINEでご案内いたします。';
+    note.innerHTML = '泊 21:00縲・:00縺ｮ縺泌茜逕ｨ縺ｯ繧ｪ繝ｼ繝医Ο繝・け縺ｨ縺ｪ繧翫∪縺吶・br>證苓ｨｼ逡ｪ蜿ｷ縺ｯ蛻･騾猫INE縺ｧ縺疲｡亥・縺・◆縺励∪縺吶・;
     note.style.display = 'block';
   } else {
     note.style.display = 'none';
@@ -446,12 +441,12 @@ function sendLiffConfirmation(data) {
 
   liff.sendMessages([{
     type: 'text',
-    text: '📅 予約が完了しました！\n\n'
-      + '予約番号: ' + data.reservationId + '\n'
-      + '日時: ' + state.date + ' ' + state.selectedStartTime + '-' + endStr + '\n'
-      + '人数: ' + state.people + '名\n'
-      + '金額: ¥' + state.finalPrice.toLocaleString() + '\n'
-      + (state.payment === 'onsite' ? '\n💰 当日現地にてお支払いください' : '\n✅ 決済完了')
+    text: '套 莠育ｴ・′螳御ｺ・＠縺ｾ縺励◆・―n\n'
+      + '莠育ｴ・分蜿ｷ: ' + data.reservationId + '\n'
+      + '譌･譎・ ' + state.date + ' ' + state.selectedStartTime + '-' + endStr + '\n'
+      + '莠ｺ謨ｰ: ' + state.people + '蜷構n'
+      + '驥鷹｡・ ﾂ･' + state.finalPrice.toLocaleString() + '\n'
+      + (state.payment === 'onsite' ? '\n腸 蠖捺律迴ｾ蝨ｰ縺ｫ縺ｦ縺頑髪謇輔＞縺上□縺輔＞' : '\n笨・豎ｺ貂亥ｮ御ｺ・)
   }]).catch(function(e) { console.warn('sendMessages error:', e); });
 }
 

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>決済完了 - PARC ROOM STUDIO</title>
+  <title>豎ｺ貂亥ｮ御ｺ・- PARC ROOM STUDIO</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -11,31 +11,31 @@
   <div class="app">
     <header class="header">
       <h1>PARC ROOM STUDIO</h1>
-      <p class="header-sub">レンタルスタジオ予約</p>
+      <p class="header-sub">繝ｬ繝ｳ繧ｿ繝ｫ繧ｹ繧ｿ繧ｸ繧ｪ莠育ｴ・/p>
     </header>
 
     <section class="step-panel active" id="verifying">
-      <p class="loading">決済を確認中...</p>
+      <p class="loading">豎ｺ貂医ｒ遒ｺ隱堺ｸｭ...</p>
     </section>
 
     <section class="step-panel" id="successPanel">
-      <div class="complete-icon">✓</div>
-      <h2>予約が完了しました！</h2>
+      <div class="complete-icon">笨・/div>
+      <h2>莠育ｴ・′螳御ｺ・＠縺ｾ縺励◆・・/h2>
       <div class="confirm-card" id="details"></div>
       <p class="complete-note" id="accessNote" style="display:none"></p>
-      <button class="btn btn-primary" onclick="closePage()">閉じる</button>
+      <button class="btn btn-primary" onclick="closePage()">髢峨§繧・/button>
     </section>
 
     <section class="step-panel" id="errorPanel">
-      <h2>エラーが発生しました</h2>
+      <h2>繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆</h2>
       <p id="errorMsg" style="color:#e94560;text-align:center;margin:20px 0;"></p>
-      <button class="btn btn-primary" onclick="location.href='index.html'">予約画面に戻る</button>
+      <button class="btn btn-primary" onclick="location.href='index.html'">莠育ｴ・判髱｢縺ｫ謌ｻ繧・/button>
     </section>
   </div>
 
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script>
-    const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwt76pCcT-0TVbstoPw7zeM-nd7kvIGK18Mcrd3PM3nuHvODyhdNNgX6TxlkJDbp4WD/exec';
+    const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycby9vmLoZ7lm6jLs9aihQrURqWMeGjDtUDyKFypOAPkJU7st_4x8kmdFx-qf-OSqEA5d/exec';
     const LIFF_ID = '2009890948-YwXjSlGC';
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -44,7 +44,7 @@
       var reservationId = params.get('reservation_id');
 
       if (!sessionId) {
-        showError('セッション情報がありません');
+        showError('繧ｻ繝・す繝ｧ繝ｳ諠・ｱ縺後≠繧翫∪縺帙ｓ');
         return;
       }
 
@@ -52,10 +52,9 @@
         liff.init({ liffId: LIFF_ID }).catch(function() {});
       }
 
-      // GAS APIで決済確認＆予約確定
-      callGasApi({ action: 'verify_payment', session_id: sessionId }, function(err, data) {
+      // GAS API縺ｧ豎ｺ貂育｢ｺ隱搾ｼ・ｺ育ｴ・｢ｺ螳・      callGasApi({ action: 'verify_payment', session_id: sessionId }, function(err, data) {
         if (err || !data.success) {
-          showError(data ? data.message : '決済の確認に失敗しました');
+          showError(data ? data.message : '豎ｺ貂医・遒ｺ隱阪↓螟ｱ謨励＠縺ｾ縺励◆');
           return;
         }
         showSuccess(data);
@@ -66,31 +65,31 @@
       document.getElementById('verifying').classList.remove('active');
       document.getElementById('successPanel').classList.add('active');
 
-      var html = '<div class="confirm-row"><span class="label">予約番号</span><span class="value">'
+      var html = '<div class="confirm-row"><span class="label">莠育ｴ・分蜿ｷ</span><span class="value">'
         + data.reservationId + '</span></div>'
-        + '<div class="confirm-row"><span class="label">利用日</span><span class="value">'
+        + '<div class="confirm-row"><span class="label">蛻ｩ逕ｨ譌･</span><span class="value">'
         + data.date + '</span></div>'
-        + '<div class="confirm-row"><span class="label">時間</span><span class="value">'
-        + data.startTime + ' 〜 ' + data.endTime + '</span></div>'
-        + '<div class="confirm-row"><span class="label">人数</span><span class="value">'
-        + data.people + '名</span></div>'
-        + '<div class="confirm-total"><span>お支払い済</span><span>¥'
+        + '<div class="confirm-row"><span class="label">譎る俣</span><span class="value">'
+        + data.startTime + ' 縲・' + data.endTime + '</span></div>'
+        + '<div class="confirm-row"><span class="label">莠ｺ謨ｰ</span><span class="value">'
+        + data.people + '蜷・/span></div>'
+        + '<div class="confirm-total"><span>縺頑髪謇輔＞貂・/span><span>ﾂ･'
         + data.totalPrice.toLocaleString() + '</span></div>';
       document.getElementById('details').innerHTML = html;
 
       if (data.needsAccessCode) {
         var note = document.getElementById('accessNote');
-        note.innerHTML = '🔑 21:00〜7:00はオートロックです。暗証番号は別途LINEでご案内します。';
+        note.innerHTML = '泊 21:00縲・:00縺ｯ繧ｪ繝ｼ繝医Ο繝・け縺ｧ縺吶よ囓險ｼ逡ｪ蜿ｷ縺ｯ蛻･騾猫INE縺ｧ縺疲｡亥・縺励∪縺吶・;
         note.style.display = 'block';
       }
 
-      // LIFF確認メッセージ送信
+      // LIFF遒ｺ隱阪Γ繝・そ繝ｼ繧ｸ騾∽ｿ｡
       if (typeof liff !== 'undefined' && liff.isInClient()) {
         liff.sendMessages([{
           type: 'text',
-          text: '✅ 決済完了・予約確定！\n\n予約番号: ' + data.reservationId
-            + '\n日時: ' + data.date + ' ' + data.startTime + '-' + data.endTime
-            + '\n金額: ¥' + data.totalPrice.toLocaleString() + '（決済済）'
+          text: '笨・豎ｺ貂亥ｮ御ｺ・・莠育ｴ・｢ｺ螳夲ｼ―n\n莠育ｴ・分蜿ｷ: ' + data.reservationId
+            + '\n譌･譎・ ' + data.date + ' ' + data.startTime + '-' + data.endTime
+            + '\n驥鷹｡・ ﾂ･' + data.totalPrice.toLocaleString() + '・域ｱｺ貂域ｸ茨ｼ・
         }]).catch(function() {});
       }
     }
@@ -121,7 +120,7 @@
       for (var k in params) url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
       scriptEl = document.createElement('script');
       scriptEl.src = url;
-      scriptEl.onerror = function() { delete window[cbName]; callback(new Error('通信エラー')); };
+      scriptEl.onerror = function() { delete window[cbName]; callback(new Error('騾壻ｿ｡繧ｨ繝ｩ繝ｼ')); };
       document.body.appendChild(scriptEl);
     }
   </script>
