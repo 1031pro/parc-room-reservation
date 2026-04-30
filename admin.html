@@ -3,147 +3,453 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PARC ROOM 管理画面</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <title>予約管理ダッシュボード | PARC ROOM STUDIO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --primary:#1a1a2e; --accent:#e94560; --success:#10b981; --border:#e5e7eb; --bg:#f5f5f8; }
+    :root { 
+      --primary: #1a1a2e; 
+      --accent: #e94560; 
+      --success: #10b981; 
+      --warning: #f59e0b;
+      --border: #e5e7eb; 
+      --bg: #f3f4f6;
+      --surface: #ffffff;
+      --text: #111827;
+      --text-sub: #6b7280;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Noto Sans JP',sans-serif; background:var(--bg); color:#1a1a2e; }
-    .container { max-width:800px; margin:0 auto; padding:20px 16px; }
-    h1 { font-size:20px; margin-bottom:20px; }
-    .login-form { background:white; padding:24px; border-radius:12px; margin-bottom:20px; }
-    .login-form input { padding:10px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; width:200px; }
-    .login-form button { padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:8px; font-size:14px; cursor:pointer; margin-left:8px; }
-    .card { background:white; border-radius:12px; padding:16px; margin-bottom:12px; border:1px solid var(--border); }
-    .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-    .card-header h3 { font-size:15px; }
-    .badge { padding:3px 10px; border-radius:10px; font-size:11px; font-weight:700; }
-    .badge-confirmed { background:#d1fae5; color:#065f46; }
-    .badge-cancelled { background:#fee2e2; color:#991b1b; }
-    .badge-onsite { background:#fef3c7; color:#92400e; }
-    .card-body { font-size:13px; color:#6b7280; line-height:1.8; }
-    .card-actions { margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
-    .cancel-area { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-    .cancel-area label { font-size:12px; color:#6b7280; }
-    .cancel-area input[type="datetime-local"] { padding:6px 10px; border:1px solid var(--border); border-radius:6px; font-size:12px; }
-    .btn-cancel { padding:8px 16px; background:var(--accent); color:white; border:none; border-radius:8px; font-size:13px; cursor:pointer; }
-    .btn-cancel:disabled { opacity:0.5; cursor:not-allowed; }
-    .refund-info { font-size:12px; color:var(--accent); margin-top:6px; }
-    .empty { text-align:center; color:#6b7280; padding:40px; }
+    body { font-family:'Inter', 'Noto Sans JP', sans-serif; background:var(--bg); color:var(--text); line-height: 1.5; }
+    
+    /* Login Screen */
+    .login-container { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .login-box { background: var(--surface); padding: 40px; border-radius: var(--radius); box-shadow: var(--shadow); width: 100%; max-width: 400px; text-align: center; }
+    .login-box h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
+    .login-box p { color: var(--text-sub); font-size: 14px; margin-bottom: 24px; }
+    .login-box input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 16px; margin-bottom: 16px; transition: border-color 0.2s; }
+    .login-box input:focus { outline: none; border-color: var(--primary); }
+    .login-box button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+    .login-box button:hover { opacity: 0.9; }
+
+    /* Dashboard Layout */
+    #dashboard { display: none; }
+    .navbar { background: var(--primary); color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .navbar h1 { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+    .nav-actions { display: flex; gap: 12px; }
+    .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+    
+    /* Stats Row */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: var(--surface); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .stat-title { font-size: 13px; color: var(--text-sub); font-weight: 500; margin-bottom: 8px; }
+    .stat-value { font-size: 28px; font-weight: 700; color: var(--primary); font-family: 'Inter', sans-serif; }
+
+    /* Controls Row */
+    .controls-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+    
+    /* Tabs */
+    .tabs { display: flex; gap: 8px; background: var(--border); padding: 4px; border-radius: 8px; }
+    .tab-btn { padding: 8px 16px; background: transparent; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; color: var(--text-sub); cursor: pointer; transition: all 0.2s; }
+    .tab-btn.active { background: var(--surface); color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    
+    /* Search */
+    .search-box { display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; min-width: 280px; }
+    .search-box input { border: none; outline: none; width: 100%; font-size: 14px; margin-left: 8px; }
+
+    /* Reservation Cards Grid */
+    .reservations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+    
+    .res-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+    .res-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    
+    .res-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; background: #fafafa; }
+    .res-id { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text-sub); font-weight: 500; }
+    .res-date { font-size: 18px; font-weight: 700; color: var(--primary); margin-top: 4px; }
+    .res-time { font-size: 14px; color: var(--text-sub); font-weight: 500; }
+    
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+    .badge-upcoming { background: #e0e7ff; color: #4338ca; }
+    .badge-past { background: #f3f4f6; color: #4b5563; }
+    .badge-cancelled { background: #fee2e2; color: #b91c1c; }
+    
+    .res-body { padding: 20px; flex-grow: 1; }
+    .info-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .info-icon { font-size: 16px; opacity: 0.7; width: 20px; text-align: center; }
+    .info-text { font-size: 14px; color: var(--text); }
+    .info-label { font-size: 11px; color: var(--text-sub); display: block; margin-bottom: 2px; }
+    
+    .payment-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; border: 1px solid currentColor; margin-left: 8px; }
+    .pay-stripe { color: var(--success); background: #ecfdf5; }
+    .pay-onsite { color: var(--warning); background: #fffbeb; }
+
+    .res-footer { padding: 16px 20px; background: #f9fafb; border-top: 1px solid var(--border); }
+    
+    .cancel-form { display: flex; flex-direction: column; gap: 8px; }
+    .cancel-form label { font-size: 12px; font-weight: 500; color: var(--text-sub); }
+    .cancel-input-group { display: flex; gap: 8px; }
+    .cancel-input-group input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
+    .btn-cancel { padding: 8px 16px; background: white; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .btn-cancel:hover { background: var(--accent); color: white; }
+    .refund-preview { font-size: 12px; color: var(--warning); font-weight: 500; margin-top: 4px; }
+
+    .empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--surface); border-radius: var(--radius); border: 1px dashed var(--border); }
+    .empty-state span { font-size: 40px; margin-bottom: 16px; display: block; }
+    .empty-state h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .empty-state p { color: var(--text-sub); font-size: 14px; }
+
+    /* Loader */
+    .loader-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; display: none; }
+    .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 768px) {
+      .controls-row { flex-direction: column; align-items: stretch; }
+      .search-box { min-width: 100%; }
+      .tabs { overflow-x: auto; white-space: nowrap; padding-bottom: 4px; }
+      .reservations-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🏢 PARC ROOM 予約管理</h1>
 
-    <div class="login-form" id="loginForm">
-      <input type="password" id="adminKey" placeholder="管理キー">
-      <button onclick="loadReservations()">ログイン</button>
+  <!-- Login View -->
+  <div class="login-container" id="loginView">
+    <div class="login-box">
+      <h1>PARC ROOM</h1>
+      <p>予約管理ダッシュボード</p>
+      <input type="password" id="adminKey" placeholder="管理キーを入力" onkeypress="if(event.key === 'Enter') login()">
+      <button onclick="login()">ログイン</button>
+      <p id="loginError" style="color:var(--accent); font-size:13px; margin-top:16px; display:none;"></p>
     </div>
+  </div>
 
-    <div id="reservationList"></div>
+  <!-- Dashboard View -->
+  <div id="dashboard">
+    <nav class="navbar">
+      <h1>🏢 PARC ROOM 予約管理</h1>
+      <div class="nav-actions">
+        <button class="btn-outline" onclick="loadData()">更新</button>
+        <button class="btn-outline" onclick="logout()">ログアウト</button>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-title">今後の予約</div>
+          <div class="stat-value" id="statUpcoming">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">今月の売上見込</div>
+          <div class="stat-value" id="statRevenue">¥0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">今月の稼働枠数</div>
+          <div class="stat-value" id="statSlots">0</div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls-row">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="setFilter('upcoming', this)">今後の予約</button>
+          <button class="tab-btn" onclick="setFilter('past', this)">過去の予約</button>
+          <button class="tab-btn" onclick="setFilter('cancelled', this)">キャンセル</button>
+          <button class="tab-btn" onclick="setFilter('all', this)">すべて</button>
+        </div>
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" id="searchInput" placeholder="名前、電話番号、予約番号で検索..." onkeyup="applyFilters()">
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div class="reservations-grid" id="grid"></div>
+    </main>
+  </div>
+
+  <!-- Loading -->
+  <div class="loader-overlay" id="loader">
+    <div class="spinner"></div>
+    <div style="font-weight:600; color:var(--text-sub)">データを取得中...</div>
   </div>
 
   <script>
     const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxi23B_KndTU2MRT8hKz_Way2z6aBGxJe84H-zjw_k_8BS5ytCHfHQuY4-3BkFNXR0D/exec';
+    
+    let allReservations = [];
+    let currentFilter = 'upcoming';
+    let currentKey = '';
 
+    // Util: API Caller
     function callApi(params, callback) {
-      var cbName = 'cb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
-      var scriptEl;
+      const cbName = 'cb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+      let scriptEl;
       window[cbName] = function(data) {
         delete window[cbName];
         if (scriptEl && scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
         callback(null, data);
       };
-      var url = GAS_WEBAPP_URL + '?callback=' + cbName;
-      for (var k in params) url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+      let url = GAS_WEBAPP_URL + '?callback=' + cbName;
+      for (let k in params) url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
       scriptEl = document.createElement('script');
       scriptEl.src = url;
       scriptEl.onerror = function() { delete window[cbName]; callback(new Error('通信エラー')); };
       document.body.appendChild(scriptEl);
     }
 
-    function loadReservations() {
-      var key = document.getElementById('adminKey').value;
+    function showLoader(show) {
+      document.getElementById('loader').style.display = show ? 'flex' : 'none';
+    }
+
+    function login() {
+      const key = document.getElementById('adminKey').value.trim();
       if (!key) return;
+      
+      showLoader(true);
+      document.getElementById('loginError').style.display = 'none';
 
       callApi({ action: 'admin_list', key: key }, function(err, data) {
         if (err || data.error) {
-          alert(data ? data.error : 'エラー');
+          showLoader(false);
+          document.getElementById('loginError').innerText = data ? data.error : '通信エラーが発生しました';
+          document.getElementById('loginError').style.display = 'block';
           return;
         }
-        document.getElementById('loginForm').style.display = 'none';
-        renderList(data.reservations, key);
+        
+        currentKey = key;
+        document.getElementById('loginView').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        
+        // セッションストレージに保存してリロード対策
+        sessionStorage.setItem('parcAdminKey', key);
+        
+        processData(data.reservations);
+        showLoader(false);
       });
     }
 
-    function renderList(reservations, key) {
-      var container = document.getElementById('reservationList');
-      if (!reservations.length) {
-        container.innerHTML = '<div class="empty">予約はありません</div>';
+    function logout() {
+      sessionStorage.removeItem('parcAdminKey');
+      location.reload();
+    }
+
+    // Auto login check
+    window.onload = function() {
+      const savedKey = sessionStorage.getItem('parcAdminKey');
+      if (savedKey) {
+        document.getElementById('adminKey').value = savedKey;
+        login();
+      }
+    };
+
+    function loadData() {
+      if (!currentKey) return;
+      showLoader(true);
+      callApi({ action: 'admin_list', key: currentKey }, function(err, data) {
+        showLoader(false);
+        if (!err && !data.error) processData(data.reservations);
+      });
+    }
+
+    function processData(reservations) {
+      const now = new Date();
+      now.setHours(0,0,0,0);
+      
+      // データ拡張とパース
+      allReservations = reservations.map(r => {
+        const dateParts = String(r.date).split('-');
+        const itemDate = new Date(parseInt(dateParts[0]), parseInt(dateParts[1])-1, parseInt(dateParts[2]));
+        
+        // 過去か未来か
+        let timeStatus = 'upcoming';
+        if (itemDate < now) timeStatus = 'past';
+        if (r.status === 'キャンセル') timeStatus = 'cancelled';
+
+        return { ...r, itemDate, timeStatus };
+      });
+
+      // 統計の計算
+      calcStats();
+      // 描画
+      applyFilters();
+    }
+
+    function calcStats() {
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+
+      let upcomingCount = 0;
+      let monthRevenue = 0;
+      let monthSlots = 0;
+
+      allReservations.forEach(r => {
+        if (r.timeStatus === 'cancelled') return;
+        
+        if (r.timeStatus === 'upcoming') upcomingCount++;
+        
+        if (r.itemDate.getMonth() === currentMonth && r.itemDate.getFullYear() === currentYear) {
+          monthRevenue += parseInt(r.price) || 0;
+          monthSlots += (parseFloat(r.duration) || 0) * 2; // 30分=1枠として計算
+        }
+      });
+
+      document.getElementById('statUpcoming').innerText = upcomingCount;
+      document.getElementById('statRevenue').innerText = '¥' + monthRevenue.toLocaleString();
+      document.getElementById('statSlots').innerText = monthSlots;
+    }
+
+    function setFilter(filter, btnElement) {
+      currentFilter = filter;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      
+      const filtered = allReservations.filter(r => {
+        // Status Filter
+        if (currentFilter !== 'all' && r.timeStatus !== currentFilter) return false;
+        
+        // Search Filter
+        if (query) {
+          const searchStr = `${r.name} ${r.phone} ${r.reservationId}`.toLowerCase();
+          if (!searchStr.includes(query)) return false;
+        }
+        return true;
+      });
+
+      renderGrid(filtered);
+    }
+
+    function renderGrid(data) {
+      const grid = document.getElementById('grid');
+      
+      if (data.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <span>📭</span>
+            <h3>該当する予約がありません</h3>
+            <p>条件を変更して検索してください。</p>
+          </div>
+        `;
         return;
       }
 
-      container.innerHTML = reservations.map(function(r) {
-        var isCancelled = r.status === 'キャンセル';
-        var isStripe = r.payment === 'オンライン決済';
-        var badgeClass = isCancelled ? 'badge-cancelled' : 'badge-confirmed';
-        var now = new Date();
-        var nowStr = now.getFullYear() + '-' + ('0'+(now.getMonth()+1)).slice(-2) + '-'
-          + ('0'+now.getDate()).slice(-2) + 'T' + ('0'+now.getHours()).slice(-2)
-          + ':' + ('0'+now.getMinutes()).slice(-2);
+      const now = new Date();
+      const nowStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' 
+                   + String(now.getDate()).padStart(2,'0') + 'T' + String(now.getHours()).padStart(2,'0') + ':00';
 
-        var html = '<div class="card">'
-          + '<div class="card-header"><h3>' + r.reservationId + '</h3>'
-          + '<span class="badge ' + badgeClass + '">' + r.status + '</span></div>'
-          + '<div class="card-body">'
-          + '📅 ' + r.date + ' ' + r.startTime + '〜 (' + r.duration + 'h)<br>'
-          + '👤 ' + r.name + ' / ' + r.people + '名<br>'
-          + '📞 ' + r.phone + '<br>'
-          + '💰 ¥' + Number(r.price).toLocaleString() + ' / '
-          + r.payment + (isStripe ? ' <span class="badge badge-confirmed">決済済</span>' : ' <span class="badge badge-onsite">現地払い</span>')
-          + '</div>';
+      grid.innerHTML = data.map(r => {
+        const isStripe = r.payment === 'オンライン決済';
+        const isCancelled = r.timeStatus === 'cancelled';
+        
+        let badgeHtml = '';
+        if (isCancelled) badgeHtml = '<span class="badge badge-cancelled">キャンセル</span>';
+        else if (r.timeStatus === 'past') badgeHtml = '<span class="badge badge-past">利用終了</span>';
+        else badgeHtml = '<span class="badge badge-upcoming">予約中</span>';
 
-        if (!isCancelled) {
-          html += '<div class="card-actions"><div class="cancel-area">'
-            + '<label>キャンセル受付時刻:</label>'
-            + '<input type="datetime-local" id="cancelTime_' + r.reservationId + '" value="' + nowStr + '">'
-            + '<button class="btn-cancel" onclick="cancelReservation(\'' + r.reservationId + '\',\'' + key + '\')">キャンセル処理</button>'
-            + '</div>';
+        const paymentTag = isStripe ? '<span class="payment-tag pay-stripe">事前決済</span>' : '<span class="payment-tag pay-onsite">現地払い</span>';
 
-          if (isStripe) {
-            var reservationDate = new Date(r.date + 'T00:00:00');
-            var diffDays = Math.floor((reservationDate - now) / (1000*60*60*24));
-            var refundMsg = diffDays >= 3 ? '全額返金' : (diffDays >= 1 ? '50%返金（¥' + Math.floor(r.price*0.5).toLocaleString() + '）' : '返金なし（当日）');
-            html += '<div class="refund-info">⚠️ 現時点での返金: ' + refundMsg + '</div>';
-          }
-          html += '</div>';
+        // 返金シミュレーション
+        let refundPreview = '';
+        if (isStripe && !isCancelled && r.timeStatus === 'upcoming') {
+          const diffDays = Math.floor((r.itemDate - now) / (1000 * 60 * 60 * 24));
+          if (diffDays >= 3) refundPreview = '※今キャンセルすると全額返金';
+          else if (diffDays >= 1) refundPreview = `※今キャンセルすると50%返金 (¥${Math.floor(r.price*0.5).toLocaleString()})`;
+          else refundPreview = '※当日キャンセルのため返金なし';
         }
 
-        return html + '</div>';
+        let footerHtml = '';
+        if (!isCancelled && r.timeStatus === 'upcoming') {
+          footerHtml = `
+            <div class="res-footer">
+              <div class="cancel-form">
+                <label>キャンセル受付時刻（通常は現在の時刻）</label>
+                <div class="cancel-input-group">
+                  <input type="datetime-local" id="cancelTime_${r.reservationId}" value="${nowStr}">
+                  <button class="btn-cancel" onclick="cancelBooking('${r.reservationId}')">キャンセル実行</button>
+                </div>
+                ${refundPreview ? `<div class="refund-preview">${refundPreview}</div>` : ''}
+              </div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="res-card">
+            <div class="res-header">
+              <div>
+                <div class="res-id">${r.reservationId}</div>
+                <div class="res-date">${r.date}</div>
+                <div class="res-time">${r.startTime} 〜 (${r.duration}時間)</div>
+              </div>
+              <div>${badgeHtml}</div>
+            </div>
+            <div class="res-body">
+              <div class="info-row">
+                <div class="info-icon">👤</div>
+                <div>
+                  <span class="info-label">代表者名 / 利用人数</span>
+                  <div class="info-text"><strong>${r.name}</strong> 様 <span style="color:var(--text-sub)">(${r.people}名)</span></div>
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-icon">📞</div>
+                <div>
+                  <span class="info-label">電話番号</span>
+                  <div class="info-text">${r.phone}</div>
+                </div>
+              </div>
+              <div class="info-row" style="margin-bottom:0">
+                <div class="info-icon">💰</div>
+                <div>
+                  <span class="info-label">決済金額 / 支払方法</span>
+                  <div class="info-text"><strong>¥${Number(r.price).toLocaleString()}</strong> ${paymentTag}</div>
+                </div>
+              </div>
+            </div>
+            ${footerHtml}
+          </div>
+        `;
       }).join('');
     }
 
-    function cancelReservation(reservationId, key) {
-      if (!confirm(reservationId + ' をキャンセルしますか？')) return;
+    function cancelBooking(reservationId) {
+      if (!confirm(`予約番号: ${reservationId}\n本当にキャンセル処理を実行しますか？`)) return;
 
-      var timeInput = document.getElementById('cancelTime_' + reservationId);
-      var requestTime = timeInput ? timeInput.value : '';
+      const timeInput = document.getElementById(`cancelTime_${reservationId}`);
+      const requestTime = timeInput ? timeInput.value : '';
 
+      showLoader(true);
       callApi({
         action: 'admin_cancel',
-        key: key,
+        key: currentKey,
         reservation_id: reservationId,
         request_time: requestTime
       }, function(err, data) {
         if (err || data.error) {
-          alert(data ? data.error : 'エラー');
+          showLoader(false);
+          alert(data ? data.error : 'キャンセル処理中にエラーが発生しました');
           return;
         }
-        var msg = 'キャンセル完了: ' + reservationId;
-        if (data.refund) msg += '\n返金: ' + data.refund.message + (data.refund.amount > 0 ? ' (¥' + data.refund.amount.toLocaleString() + ')' : '');
+        
+        let msg = `キャンセル完了: ${reservationId}`;
+        if (data.refund) {
+          msg += `\n\n【返金情報】\n${data.refund.message}`;
+          if (data.refund.amount > 0) msg += `\n返金額: ¥${data.refund.amount.toLocaleString()}`;
+        }
+        
         alert(msg);
-        loadReservations();
+        loadData(); // データを再取得して画面を更新
       });
     }
   </script>
