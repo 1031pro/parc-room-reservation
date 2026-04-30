@@ -268,7 +268,7 @@
       now.setHours(0,0,0,0);
       
       allReservations = reservations.map(r => {
-        // --- 日付の整形 (ISO文字列 "2026-08-09T15:00:00.000Z" などの対策) ---
+        // --- 日付の整形 (ISO文字列対策) ---
         let displayDate = String(r.date);
         if (displayDate.includes('T')) {
           const d = new Date(displayDate);
@@ -276,7 +276,15 @@
         }
         r.date = displayDate;
 
-        // --- 電話番号の整形 (スプレッドシートの数値化による先頭0落ち対策) ---
+        // --- 時間の整形 (スプレッドシート時刻データ 1899-12-30... 対策) ---
+        let displayTime = String(r.startTime);
+        if (displayTime.includes('T')) {
+          const tDate = new Date(displayTime);
+          displayTime = String(tDate.getHours()).padStart(2, '0') + ':' + String(tDate.getMinutes()).padStart(2, '0');
+        }
+        r.startTime = displayTime;
+
+        // --- 電話番号の整形 (先頭0落ち対策) ---
         let phoneStr = String(r.phone).trim();
         if (phoneStr && !phoneStr.startsWith('0')) {
           phoneStr = '0' + phoneStr;
