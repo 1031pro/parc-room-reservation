@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>決済完亁E- PARC ROOM STUDIO</title>
+  <title>決済完了 - PARC ROOM STUDIO</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -11,7 +11,7 @@
   <div class="app">
     <header class="header">
       <h1>PARC ROOM STUDIO</h1>
-      <p class="header-sub">レンタルスタジオ予紁E/p>
+      <p class="header-sub">レンタルスタジオ予約</p>
     </header>
 
     <section class="step-panel active" id="verifying">
@@ -19,23 +19,23 @@
     </section>
 
     <section class="step-panel" id="successPanel">
-      <div class="complete-icon">✁E/div>
-      <h2>予紁E��完亁E��ました�E�E/h2>
+      <div class="complete-icon">✓</div>
+      <h2>予約が完了しました！</h2>
       <div class="confirm-card" id="details"></div>
       <p class="complete-note" id="accessNote" style="display:none"></p>
-      <button class="btn btn-primary" onclick="closePage()">閉じめE/button>
+      <button class="btn btn-primary" onclick="closePage()">閉じる</button>
     </section>
 
     <section class="step-panel" id="errorPanel">
       <h2>エラーが発生しました</h2>
       <p id="errorMsg" style="color:#e94560;text-align:center;margin:20px 0;"></p>
-      <button class="btn btn-primary" onclick="location.href='index.html'">予紁E��面に戻めE/button>
+      <button class="btn btn-primary" onclick="location.href='index.html'">予約画面に戻る</button>
     </section>
   </div>
 
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script>
-    const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwppiLTyW_bRMQhWaggS8PTPmK_H6mMIb7K8q1vuOuM9uT327-uIqmfrGkxGF3wbFcw/exec';
+    const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxi23B_KndTU2MRT8hKz_Way2z6aBGxJe84H-zjw_k_8BS5ytCHfHQuY4-3BkFNXR0D/exec';
     const LIFF_ID = '2009890948-YwXjSlGC';
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -44,7 +44,7 @@
       var reservationId = params.get('reservation_id');
 
       if (!sessionId) {
-        showError('セチE��ョン惁E��がありません');
+        showError('セッション情報がありません');
         return;
       }
 
@@ -52,9 +52,10 @@
         liff.init({ liffId: LIFF_ID }).catch(function() {});
       }
 
-      // GAS APIで決済確認！E��紁E��宁E      callGasApi({ action: 'verify_payment', session_id: sessionId }, function(err, data) {
+      // GAS APIで決済確認・予約確定
+      callGasApi({ action: 'verify_payment', session_id: sessionId }, function(err, data) {
         if (err || !data.success) {
-          showError(data ? data.message : '決済�E確認に失敗しました');
+          showError(data ? data.message : '決済の確認に失敗しました');
           return;
         }
         showSuccess(data);
@@ -65,31 +66,31 @@
       document.getElementById('verifying').classList.remove('active');
       document.getElementById('successPanel').classList.add('active');
 
-      var html = '<div class="confirm-row"><span class="label">予紁E��号</span><span class="value">'
+      var html = '<div class="confirm-row"><span class="label">予約番号</span><span class="value">'
         + data.reservationId + '</span></div>'
         + '<div class="confirm-row"><span class="label">利用日</span><span class="value">'
         + data.date + '</span></div>'
         + '<div class="confirm-row"><span class="label">時間</span><span class="value">'
-        + data.startTime + ' 、E' + data.endTime + '</span></div>'
+        + data.startTime + ' 〜 ' + data.endTime + '</span></div>'
         + '<div class="confirm-row"><span class="label">人数</span><span class="value">'
-        + data.people + '吁E/span></div>'
-        + '<div class="confirm-total"><span>お支払い渁E/span><span>¥'
+        + data.people + '名</span></div>'
+        + '<div class="confirm-total"><span>お支払い済</span><span>¥'
         + data.totalPrice.toLocaleString() + '</span></div>';
       document.getElementById('details').innerHTML = html;
 
       if (data.needsAccessCode) {
         var note = document.getElementById('accessNote');
-        note.innerHTML = '🔑 21:00、E:00はオートロチE��です。暗証番号は別途LINEでご案�Eします、E;
+        note.innerHTML = '🔑 21:00〜7:00はオートロックです。暗証番号は別途LINEでご案内します。';
         note.style.display = 'block';
       }
 
-      // LIFF確認メチE��ージ送信
+      // LIFF確認メッセージ送信
       if (typeof liff !== 'undefined' && liff.isInClient()) {
         liff.sendMessages([{
           type: 'text',
-          text: '✁E決済完亁E�E予紁E��定！\n\n予紁E��号: ' + data.reservationId
-            + '\n日晁E ' + data.date + ' ' + data.startTime + '-' + data.endTime
-            + '\n金顁E ¥' + data.totalPrice.toLocaleString() + '�E�決済済！E
+          text: '✓ 決済完了＆予約確定！\n\n予約番号: ' + data.reservationId
+            + '\n日時: ' + data.date + ' ' + data.startTime + '-' + data.endTime
+            + '\n金額: ¥' + data.totalPrice.toLocaleString() + '（決済済）'
         }]).catch(function() {});
       }
     }
