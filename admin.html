@@ -164,7 +164,7 @@
         </div>
         <div class="search-box">
           <span>🔍</span>
-          <input type="text" id="searchInput" placeholder="名前、電話番号、予約番号で検索..." onkeyup="applyFilters()">
+          <input type="text" id="searchInput" placeholder="名前、電話番号、予約番号、日付(YYYY-MM-DD)で検索..." onkeyup="applyFilters()">
         </div>
       </div>
 
@@ -321,7 +321,7 @@
         
         // Search Filter
         if (query) {
-          const searchStr = `${r.name} ${r.phone} ${r.reservationId}`.toLowerCase();
+          const searchStr = `${r.name} ${r.phone} ${r.reservationId} ${r.date}`.toLowerCase();
           if (!searchStr.includes(query)) return false;
         }
         return true;
