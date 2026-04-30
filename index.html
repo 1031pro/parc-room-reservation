@@ -38,8 +38,13 @@
     <!-- Step 1: 日付選択 -->
     <section class="step-panel active" id="step1">
       <h2>利用日を選択</h2>
-      <input type="date" id="dateInput" class="date-input">
-      <div id="dayInfo" class="day-info"></div>
+      <div class="calendar-nav">
+        <button class="cal-nav-btn" onclick="prevMonth()">◀</button>
+        <span id="calendarTitle" class="cal-title"></span>
+        <button class="cal-nav-btn" onclick="nextMonth()">▶</button>
+      </div>
+      <div id="calendarGrid" class="calendar-grid"></div>
+      <div id="dayInfo" class="day-info" style="display:none"></div>
       <button class="btn btn-primary" onclick="goToStep2()">次へ</button>
     </section>
 

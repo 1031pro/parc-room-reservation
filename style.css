@@ -125,6 +125,75 @@ input:focus, select:focus {
   border: 1px solid var(--border);
 }
 
+/* カレンダー */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.cal-title {
+  font-size: 16px;
+  font-weight: 700;
+  min-width: 120px;
+  text-align: center;
+}
+.cal-nav-btn {
+  width: 36px; height: 36px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.cal-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.calendar-grid {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 12px;
+  margin-bottom: 16px;
+}
+.cal-header-row, .cal-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-header-row { margin-bottom: 6px; }
+.cal-header-cell {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 0;
+  color: var(--text-sub);
+}
+.cal-cell {
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.cal-empty { visibility: hidden; }
+.cal-available { cursor: pointer; }
+.cal-available:hover { background: #fef2f4; }
+.cal-disabled { color: #d1d5db; cursor: not-allowed; }
+.cal-selected {
+  background: var(--accent) !important;
+  color: white !important;
+}
+.cal-sun { color: var(--accent); }
+.cal-sat { color: #3b82f6; }
+.cal-sun.cal-disabled, .cal-sat.cal-disabled { opacity: 0.4; }
+.cal-sun.cal-selected, .cal-sat.cal-selected { color: white !important; }
+
 /* スロットグリッド */
 .slot-grid {
   display: grid;
