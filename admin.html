@@ -16,107 +16,86 @@
       --surface: #ffffff;
       --text: #111827;
       --text-sub: #6b7280;
-      --radius: 12px;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --radius: 8px;
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Inter', 'Noto Sans JP', sans-serif; background:var(--bg); color:var(--text); line-height: 1.5; }
     
-    /* Login Screen */
+    /* Login */
     .login-container { height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .login-box { background: var(--surface); padding: 40px; border-radius: var(--radius); box-shadow: var(--shadow); width: 100%; max-width: 400px; text-align: center; }
+    .login-box { background: var(--surface); padding: 40px; border-radius: 12px; box-shadow: var(--shadow); width: 100%; max-width: 400px; text-align: center; }
     .login-box h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
     .login-box p { color: var(--text-sub); font-size: 14px; margin-bottom: 24px; }
-    .login-box input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 16px; margin-bottom: 16px; transition: border-color 0.2s; }
-    .login-box input:focus { outline: none; border-color: var(--primary); }
-    .login-box button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
-    .login-box button:hover { opacity: 0.9; }
+    .login-box input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 16px; margin-bottom: 16px; }
+    .login-box button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
 
-    /* Dashboard Layout */
+    /* Dashboard */
     #dashboard { display: none; }
-    .navbar { background: var(--primary); color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .navbar h1 { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
-    .nav-actions { display: flex; gap: 12px; }
-    .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
-    .btn-outline:hover { background: rgba(255,255,255,0.1); }
+    .navbar { background: var(--primary); color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+    .navbar h1 { font-size: 18px; font-weight: 700; }
+    .nav-actions button { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; margin-left: 8px; }
 
-    .main-content { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 24px; }
     
-    /* Stats Row */
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    /* Stats */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
     .stat-card { background: var(--surface); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
     .stat-title { font-size: 13px; color: var(--text-sub); font-weight: 500; margin-bottom: 8px; }
-    .stat-value { font-size: 28px; font-weight: 700; color: var(--primary); font-family: 'Inter', sans-serif; }
+    .stat-value { font-size: 24px; font-weight: 700; color: var(--primary); font-family: 'Inter', sans-serif; }
 
-    /* Controls Row */
-    .controls-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
-    
-    /* Tabs */
-    .tabs { display: flex; gap: 8px; background: var(--border); padding: 4px; border-radius: 8px; }
-    .tab-btn { padding: 8px 16px; background: transparent; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; color: var(--text-sub); cursor: pointer; transition: all 0.2s; }
-    .tab-btn.active { background: var(--surface); color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    
-    /* Search */
-    .search-box { display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; min-width: 280px; }
+    /* Controls */
+    .controls-panel { background: var(--surface); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 6px; }
+    .tab-btn { padding: 6px 16px; border: none; border-radius: 4px; background: transparent; font-size: 14px; font-weight: 500; color: var(--text-sub); cursor: pointer; }
+    .tab-btn.active { background: var(--surface); color: var(--primary); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .search-box { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; min-width: 300px; }
     .search-box input { border: none; outline: none; width: 100%; font-size: 14px; margin-left: 8px; }
 
-    /* Reservation Cards Grid */
-    .reservations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+    /* Data Table */
+    .table-container { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 14px; white-space: nowrap; }
+    th { background: #f8fafc; font-weight: 600; color: var(--text-sub); font-size: 13px; position: sticky; top: 0; }
+    tbody tr:hover { background: #f9fafb; }
     
-    .res-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
-    .res-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .cell-id { font-family: 'Inter', monospace; font-size: 13px; color: var(--text-sub); }
+    .cell-date { font-weight: 600; color: var(--primary); }
+    .cell-name { font-weight: 500; }
+    .cell-price { font-family: 'Inter', sans-serif; font-weight: 600; text-align: right; }
     
-    .res-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; background: #fafafa; }
-    .res-id { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text-sub); font-weight: 500; }
-    .res-date { font-size: 18px; font-weight: 700; color: var(--primary); margin-top: 4px; }
-    .res-time { font-size: 14px; color: var(--text-sub); font-weight: 500; }
-    
-    .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+    .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
     .badge-upcoming { background: #e0e7ff; color: #4338ca; }
     .badge-past { background: #f3f4f6; color: #4b5563; }
     .badge-cancelled { background: #fee2e2; color: #b91c1c; }
-    
-    .res-body { padding: 20px; flex-grow: 1; }
-    .info-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
-    .info-icon { font-size: 16px; opacity: 0.7; width: 20px; text-align: center; }
-    .info-text { font-size: 14px; color: var(--text); }
-    .info-label { font-size: 11px; color: var(--text-sub); display: block; margin-bottom: 2px; }
-    
-    .payment-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; border: 1px solid currentColor; margin-left: 8px; }
-    .pay-stripe { color: var(--success); background: #ecfdf5; }
-    .pay-onsite { color: var(--warning); background: #fffbeb; }
+    .pay-stripe { color: var(--success); border: 1px solid currentColor; }
+    .pay-onsite { color: var(--warning); border: 1px solid currentColor; }
 
-    .res-footer { padding: 16px 20px; background: #f9fafb; border-top: 1px solid var(--border); }
-    
-    .cancel-form { display: flex; flex-direction: column; gap: 8px; }
-    .cancel-form label { font-size: 12px; font-weight: 500; color: var(--text-sub); }
-    .cancel-input-group { display: flex; gap: 8px; }
-    .cancel-input-group input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
-    .btn-cancel { padding: 8px 16px; background: white; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-    .btn-cancel:hover { background: var(--accent); color: white; }
-    .refund-preview { font-size: 12px; color: var(--warning); font-weight: 500; margin-top: 4px; }
+    /* Action Dropdown / Button */
+    .btn-action { padding: 6px 12px; background: white; border: 1px solid var(--border); border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text); }
+    .btn-action:hover { border-color: var(--text-sub); }
+    .btn-danger { color: var(--accent); border-color: #fecaca; background: #fef2f2; }
+    .btn-danger:hover { background: #fee2e2; border-color: #fca5a5; }
 
-    .empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--surface); border-radius: var(--radius); border: 1px dashed var(--border); }
-    .empty-state span { font-size: 40px; margin-bottom: 16px; display: block; }
-    .empty-state h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-    .empty-state p { color: var(--text-sub); font-size: 14px; }
+    /* Pagination */
+    .pagination { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--surface); border-top: 1px solid var(--border); }
+    .page-info { font-size: 13px; color: var(--text-sub); }
+    .page-controls { display: flex; gap: 8px; }
+    .btn-page { padding: 6px 12px; border: 1px solid var(--border); background: white; border-radius: 4px; font-size: 13px; cursor: pointer; }
+    .btn-page:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-page:hover:not(:disabled) { background: var(--bg); }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-sub); }
 
     /* Loader */
-    .loader-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; display: none; }
+    .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; display: none; }
     .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    @media (max-width: 768px) {
-      .controls-row { flex-direction: column; align-items: stretch; }
-      .search-box { min-width: 100%; }
-      .tabs { overflow-x: auto; white-space: nowrap; padding-bottom: 4px; }
-      .reservations-grid { grid-template-columns: 1fr; }
-    }
   </style>
 </head>
 <body>
 
-  <!-- Login View -->
+  <!-- Login -->
   <div class="login-container" id="loginView">
     <div class="login-box">
       <h1>PARC ROOM</h1>
@@ -127,18 +106,17 @@
     </div>
   </div>
 
-  <!-- Dashboard View -->
+  <!-- Dashboard -->
   <div id="dashboard">
     <nav class="navbar">
       <h1>🏢 PARC ROOM 予約管理</h1>
       <div class="nav-actions">
-        <button class="btn-outline" onclick="loadData()">更新</button>
-        <button class="btn-outline" onclick="logout()">ログアウト</button>
+        <button onclick="loadData()">更新</button>
+        <button onclick="logout()">ログアウト</button>
       </div>
     </nav>
 
     <main class="main-content">
-      <!-- Stats -->
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-title">今後の予約</div>
@@ -154,8 +132,7 @@
         </div>
       </div>
 
-      <!-- Controls -->
-      <div class="controls-row">
+      <div class="controls-panel">
         <div class="tabs">
           <button class="tab-btn active" onclick="setFilter('upcoming', this)">今後の予約</button>
           <button class="tab-btn" onclick="setFilter('past', this)">過去の予約</button>
@@ -164,16 +141,37 @@
         </div>
         <div class="search-box">
           <span>🔍</span>
-          <input type="text" id="searchInput" placeholder="名前、電話番号、予約番号、日付(YYYY-MM-DD)で検索..." onkeyup="applyFilters()">
+          <input type="text" id="searchInput" placeholder="名前、電話番号、日付(YYYY-MM-DD)..." onkeyup="handleSearch()">
         </div>
       </div>
 
-      <!-- Grid -->
-      <div class="reservations-grid" id="grid"></div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>予約番号</th>
+              <th>利用日</th>
+              <th>時間帯</th>
+              <th>代表者</th>
+              <th>連絡先</th>
+              <th>料金 / 支払方法</th>
+              <th>ステータス</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <div class="pagination">
+          <div class="page-info" id="pageInfo">全 0 件中 0〜0 件を表示</div>
+          <div class="page-controls">
+            <button class="btn-page" id="btnPrev" onclick="changePage(-1)">前へ</button>
+            <button class="btn-page" id="btnNext" onclick="changePage(1)">次へ</button>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 
-  <!-- Loading -->
   <div class="loader-overlay" id="loader">
     <div class="spinner"></div>
     <div style="font-weight:600; color:var(--text-sub)">データを取得中...</div>
@@ -183,10 +181,14 @@
     const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxi23B_KndTU2MRT8hKz_Way2z6aBGxJe84H-zjw_k_8BS5ytCHfHQuY4-3BkFNXR0D/exec';
     
     let allReservations = [];
+    let filteredData = [];
     let currentFilter = 'upcoming';
     let currentKey = '';
+    
+    // Pagination settings
+    const ITEMS_PER_PAGE = 20;
+    let currentPage = 1;
 
-    // Util: API Caller
     function callApi(params, callback) {
       const cbName = 'cb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
       let scriptEl;
@@ -210,10 +212,7 @@
     function login() {
       const key = document.getElementById('adminKey').value.trim();
       if (!key) return;
-      
       showLoader(true);
-      document.getElementById('loginError').style.display = 'none';
-
       callApi({ action: 'admin_list', key: key }, function(err, data) {
         if (err || data.error) {
           showLoader(false);
@@ -221,14 +220,10 @@
           document.getElementById('loginError').style.display = 'block';
           return;
         }
-        
         currentKey = key;
         document.getElementById('loginView').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
-        
-        // セッションストレージに保存してリロード対策
         sessionStorage.setItem('parcAdminKey', key);
-        
         processData(data.reservations);
         showLoader(false);
       });
@@ -239,7 +234,6 @@
       location.reload();
     }
 
-    // Auto login check
     window.onload = function() {
       const savedKey = sessionStorage.getItem('parcAdminKey');
       if (savedKey) {
@@ -261,195 +255,138 @@
       const now = new Date();
       now.setHours(0,0,0,0);
       
-      // データ拡張とパース
       allReservations = reservations.map(r => {
         const dateParts = String(r.date).split('-');
         const itemDate = new Date(parseInt(dateParts[0]), parseInt(dateParts[1])-1, parseInt(dateParts[2]));
-        
-        // 過去か未来か
         let timeStatus = 'upcoming';
         if (itemDate < now) timeStatus = 'past';
         if (r.status === 'キャンセル') timeStatus = 'cancelled';
-
         return { ...r, itemDate, timeStatus };
       });
 
-      // 統計の計算
       calcStats();
-      // 描画
+      currentPage = 1;
       applyFilters();
     }
 
     function calcStats() {
       const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-
-      let upcomingCount = 0;
-      let monthRevenue = 0;
-      let monthSlots = 0;
-
+      let upcomingCount = 0; let monthRevenue = 0; let monthSlots = 0;
       allReservations.forEach(r => {
         if (r.timeStatus === 'cancelled') return;
-        
         if (r.timeStatus === 'upcoming') upcomingCount++;
-        
-        if (r.itemDate.getMonth() === currentMonth && r.itemDate.getFullYear() === currentYear) {
+        if (r.itemDate.getMonth() === now.getMonth() && r.itemDate.getFullYear() === now.getFullYear()) {
           monthRevenue += parseInt(r.price) || 0;
-          monthSlots += (parseFloat(r.duration) || 0) * 2; // 30分=1枠として計算
+          monthSlots += (parseFloat(r.duration) || 0) * 2;
         }
       });
-
       document.getElementById('statUpcoming').innerText = upcomingCount;
       document.getElementById('statRevenue').innerText = '¥' + monthRevenue.toLocaleString();
       document.getElementById('statSlots').innerText = monthSlots;
     }
 
-    function setFilter(filter, btnElement) {
+    function setFilter(filter, btn) {
       currentFilter = filter;
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentPage = 1;
+      applyFilters();
+    }
+
+    function handleSearch() {
+      currentPage = 1;
       applyFilters();
     }
 
     function applyFilters() {
       const query = document.getElementById('searchInput').value.toLowerCase();
-      
-      const filtered = allReservations.filter(r => {
-        // Status Filter
+      filteredData = allReservations.filter(r => {
         if (currentFilter !== 'all' && r.timeStatus !== currentFilter) return false;
-        
-        // Search Filter
         if (query) {
           const searchStr = `${r.name} ${r.phone} ${r.reservationId} ${r.date}`.toLowerCase();
           if (!searchStr.includes(query)) return false;
         }
         return true;
       });
-
-      renderGrid(filtered);
+      renderTable();
     }
 
-    function renderGrid(data) {
-      const grid = document.getElementById('grid');
-      
-      if (data.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-state">
-            <span>📭</span>
-            <h3>該当する予約がありません</h3>
-            <p>条件を変更して検索してください。</p>
-          </div>
-        `;
+    function changePage(delta) {
+      currentPage += delta;
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('tableBody');
+      if (filteredData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="empty-state">該当する予約が見つかりません。</td></tr>`;
+        updatePagination(0, 0);
         return;
       }
 
-      const now = new Date();
-      const nowStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' 
-                   + String(now.getDate()).padStart(2,'0') + 'T' + String(now.getHours()).padStart(2,'0') + ':00';
+      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+      const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredData.length);
+      const pageData = filteredData.slice(startIndex, endIndex);
 
-      grid.innerHTML = data.map(r => {
-        const isStripe = r.payment === 'オンライン決済';
+      tbody.innerHTML = pageData.map(r => {
         const isCancelled = r.timeStatus === 'cancelled';
+        const isStripe = r.payment === 'オンライン決済';
         
-        let badgeHtml = '';
-        if (isCancelled) badgeHtml = '<span class="badge badge-cancelled">キャンセル</span>';
-        else if (r.timeStatus === 'past') badgeHtml = '<span class="badge badge-past">利用終了</span>';
-        else badgeHtml = '<span class="badge badge-upcoming">予約中</span>';
+        let statusBadge = isCancelled ? '<span class="badge badge-cancelled">キャンセル</span>' 
+                        : (r.timeStatus === 'past' ? '<span class="badge badge-past">利用終了</span>' : '<span class="badge badge-upcoming">予約中</span>');
+        
+        let paymentBadge = isStripe ? '<span class="badge pay-stripe">事前決済</span>' : '<span class="badge pay-onsite">現地払い</span>';
 
-        const paymentTag = isStripe ? '<span class="payment-tag pay-stripe">事前決済</span>' : '<span class="payment-tag pay-onsite">現地払い</span>';
-
-        // 返金シミュレーション
-        let refundPreview = '';
-        if (isStripe && !isCancelled && r.timeStatus === 'upcoming') {
-          const diffDays = Math.floor((r.itemDate - now) / (1000 * 60 * 60 * 24));
-          if (diffDays >= 3) refundPreview = '※今キャンセルすると全額返金';
-          else if (diffDays >= 1) refundPreview = `※今キャンセルすると50%返金 (¥${Math.floor(r.price*0.5).toLocaleString()})`;
-          else refundPreview = '※当日キャンセルのため返金なし';
-        }
-
-        let footerHtml = '';
+        let actionBtn = '-';
         if (!isCancelled && r.timeStatus === 'upcoming') {
-          footerHtml = `
-            <div class="res-footer">
-              <div class="cancel-form">
-                <label>キャンセル受付時刻（通常は現在の時刻）</label>
-                <div class="cancel-input-group">
-                  <input type="datetime-local" id="cancelTime_${r.reservationId}" value="${nowStr}">
-                  <button class="btn-cancel" onclick="cancelBooking('${r.reservationId}')">キャンセル実行</button>
-                </div>
-                ${refundPreview ? `<div class="refund-preview">${refundPreview}</div>` : ''}
-              </div>
-            </div>
-          `;
+          actionBtn = `<button class="btn-action btn-danger" onclick="cancelBooking('${r.reservationId}')">キャンセル処理</button>`;
         }
 
         return `
-          <div class="res-card">
-            <div class="res-header">
-              <div>
-                <div class="res-id">${r.reservationId}</div>
-                <div class="res-date">${r.date}</div>
-                <div class="res-time">${r.startTime} 〜 (${r.duration}時間)</div>
-              </div>
-              <div>${badgeHtml}</div>
-            </div>
-            <div class="res-body">
-              <div class="info-row">
-                <div class="info-icon">👤</div>
-                <div>
-                  <span class="info-label">代表者名 / 利用人数</span>
-                  <div class="info-text"><strong>${r.name}</strong> 様 <span style="color:var(--text-sub)">(${r.people}名)</span></div>
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-icon">📞</div>
-                <div>
-                  <span class="info-label">電話番号</span>
-                  <div class="info-text">${r.phone}</div>
-                </div>
-              </div>
-              <div class="info-row" style="margin-bottom:0">
-                <div class="info-icon">💰</div>
-                <div>
-                  <span class="info-label">決済金額 / 支払方法</span>
-                  <div class="info-text"><strong>¥${Number(r.price).toLocaleString()}</strong> ${paymentTag}</div>
-                </div>
-              </div>
-            </div>
-            ${footerHtml}
-          </div>
+          <tr>
+            <td class="cell-id">${r.reservationId}</td>
+            <td class="cell-date">${r.date}</td>
+            <td>${r.startTime} 〜 (${r.duration}h)</td>
+            <td class="cell-name">${r.name} <span style="color:#6b7280; font-size:12px;">(${r.people}名)</span></td>
+            <td>${r.phone}</td>
+            <td class="cell-price">¥${Number(r.price).toLocaleString()} <br><div style="margin-top:4px">${paymentBadge}</div></td>
+            <td>${statusBadge}</td>
+            <td>${actionBtn}</td>
+          </tr>
         `;
       }).join('');
+
+      updatePagination(startIndex + 1, endIndex);
+    }
+
+    function updatePagination(start, end) {
+      const total = filteredData.length;
+      document.getElementById('pageInfo').innerText = `全 ${total} 件中 ${start}〜${end} 件を表示`;
+      document.getElementById('btnPrev').disabled = currentPage === 1;
+      document.getElementById('btnNext').disabled = end >= total;
     }
 
     function cancelBooking(reservationId) {
-      if (!confirm(`予約番号: ${reservationId}\n本当にキャンセル処理を実行しますか？`)) return;
-
-      const timeInput = document.getElementById(`cancelTime_${reservationId}`);
-      const requestTime = timeInput ? timeInput.value : '';
-
+      if (!confirm(`予約番号: ${reservationId}\n本当にキャンセル処理を実行しますか？\n(返金額等はキャンセルポリシーに従って自動計算されます)`)) return;
       showLoader(true);
       callApi({
         action: 'admin_cancel',
         key: currentKey,
         reservation_id: reservationId,
-        request_time: requestTime
+        request_time: new Date().toISOString()
       }, function(err, data) {
         if (err || data.error) {
           showLoader(false);
           alert(data ? data.error : 'キャンセル処理中にエラーが発生しました');
           return;
         }
-        
         let msg = `キャンセル完了: ${reservationId}`;
         if (data.refund) {
-          msg += `\n\n【返金情報】\n${data.refund.message}`;
-          if (data.refund.amount > 0) msg += `\n返金額: ¥${data.refund.amount.toLocaleString()}`;
+          msg += `\n【返金】${data.refund.message}`;
+          if (data.refund.amount > 0) msg += ` (¥${data.refund.amount.toLocaleString()})`;
         }
-        
         alert(msg);
-        loadData(); // データを再取得して画面を更新
+        loadData();
       });
     }
   </script>
