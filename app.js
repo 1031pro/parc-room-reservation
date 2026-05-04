@@ -3,7 +3,7 @@
  */
 
 // --- 設定 ---
-const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxi23B_KndTU2MRT8hKz_Way2z6aBGxJe84H-zjw_k_8BS5ytCHfHQuY4-3BkFNXR0D/exec';
+const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyisogXEUoK85r3CZGio8g88aCnLM_w9nLRzz54Ro_2WSV9YzcsS1i-VJOzNrOOM2ch/exec';
 const LIFF_ID = '2009890948-YwXjSlGC';
 
 const PRICING = { weekday: 500, weekend: 600, midnight: 200 };
@@ -229,6 +229,15 @@ function goBack(toStep) { showStep(toStep); }
 // ============================================================
 function goToStep2() {
   if (!state.date) { alert('日付を選択してください'); return; }
+
+  // Step 2に選択した日付を表示
+  var isWeekend = (state.dayOfWeek === 0 || state.dayOfWeek === 6);
+  var dayType = isWeekend ? '土日' : '平日';
+  var step2Info = document.getElementById('step2DateInfo');
+  step2Info.innerHTML = '<strong>📅 ' + state.date + '（' + DAY_NAMES[state.dayOfWeek] + '） ' + dayType + '</strong><br>'
+    + '通常時間帯(8:00-24:00): ¥' + (isWeekend ? '1,200' : '1,000') + '/時間<br>'
+    + '深夜早朝(0:00-8:00): ¥400/時間';
+
   showStep(2);
   loadSlots();
 }
