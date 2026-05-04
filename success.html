@@ -84,13 +84,11 @@
         note.style.display = 'block';
       }
 
-      // LIFF確認メッセージ送信
+      // LIFF確認メッセージ送信（詳細はGAS Push APIで送信される）
       if (typeof liff !== 'undefined' && liff.isInClient()) {
         liff.sendMessages([{
           type: 'text',
-          text: '✓ 決済完了＆予約確定！\n\n予約番号: ' + data.reservationId
-            + '\n日時: ' + data.date + ' ' + data.startTime + '-' + data.endTime
-            + '\n金額: ¥' + data.totalPrice.toLocaleString() + '（決済済）'
+          text: '✅ 決済完了＆予約確定（予約番号: ' + data.reservationId + '）'
         }]).catch(function() {});
       }
     }

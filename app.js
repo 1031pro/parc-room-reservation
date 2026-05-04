@@ -495,18 +495,12 @@ function showComplete(data) {
 }
 
 function sendLiffConfirmation(data) {
+  // GAS Push APIで詳細利用案内を送信するため、LIFFからは簡潔な通知のみ
   if (typeof liff === 'undefined' || !liff.isInClient()) return;
-  var endMin = state.selectedStartMinutes + (state.slotCount * SLOT_MINUTES);
-  var endStr = ('0' + Math.floor(endMin / 60)).slice(-2) + ':' + ('0' + (endMin % 60)).slice(-2);
 
   liff.sendMessages([{
     type: 'text',
-    text: '📅 予約が完了しました！\n\n'
-      + '予約番号: ' + data.reservationId + '\n'
-      + '日時: ' + state.date + ' ' + state.selectedStartTime + '-' + endStr + '\n'
-      + '人数: ' + state.people + '名\n'
-      + '金額: ¥' + state.finalPrice.toLocaleString() + '\n'
-      + (state.payment === 'onsite' ? '\n💰 当日現地にてお支払いください' : '\n✅ 決済完了')
+    text: '📅 予約を申し込みました（予約番号: ' + data.reservationId + '）'
   }]).catch(function(e) { console.warn('sendMessages error:', e); });
 }
 
