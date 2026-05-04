@@ -19,6 +19,8 @@ let state = {
   dayOfWeek: -1,
   calendarMonth: new Date(),
   slots: [],
+  prefetchedSlots: null,
+  prefetchDate: '',
   selectedStartMinutes: -1,
   selectedStartTime: '',
   slotCount: MIN_SLOTS,
@@ -175,6 +177,15 @@ function selectDate(dateStr, dow) {
     + '通常時間帯(8:00-24:00): ¥' + (isWeekend ? '1,200' : '1,000') + '/時間<br>'
     + '深夜早朝(0:00-8:00): ¥400/時間';
   info.style.display = 'block';
+
+  // 日付選択時に空き枠をプリフェッチ（Step 2遷移を高速化）
+  state.prefetchedSlots = null;
+  state.prefetchDate = dateStr;
+  callGasApi({ action: 'slots', date: dateStr }, function(err, data) {
+    if (!err && !data.error && state.prefetchDate === dateStr) {
+      state.prefetchedSlots = data.slots;
+    }
+  });
 }
 
 // ============================================================
@@ -247,8 +258,16 @@ function goToStep2() {
 // ============================================================
 function loadSlots() {
   var grid = document.getElementById('slotGrid');
-  grid.innerHTML = '<p class="loading">読み込み中...</p>';
 
+  // プリフェッチ済みのデータがあれば即表示
+  if (state.prefetchedSlots && state.prefetchDate === state.date) {
+    state.slots = state.prefetchedSlots;
+    state.prefetchedSlots = null;
+    renderSlots();
+    return;
+  }
+
+  grid.innerHTML = '<p class="loading">読み込み中...</p>';
   callGasApi({ action: 'slots', date: state.date }, function(err, data) {
     if (err || data.error) {
       grid.innerHTML = '<p class="loading">エラーが発生しました</p>';
