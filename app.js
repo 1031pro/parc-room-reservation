@@ -116,8 +116,8 @@ function renderCalendar() {
     var dateStr = formatDate(cellDate);
     var dow = cellDate.getDay();
 
-    // 過去日 + 今日は選択不可
-    if (cellDate <= today) {
+    // 過去日は選択不可（今日は選択可能）
+    if (cellDate < today) {
       cell.classList.add('cal-disabled');
     } else {
       cell.classList.add('cal-available');
