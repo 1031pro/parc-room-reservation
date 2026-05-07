@@ -286,7 +286,17 @@
   <div class="modal-overlay" id="confirmModal">
     <div class="modal-box">
       <div class="modal-title">キャンセル処理の確認</div>
-      <div class="modal-desc" id="modalMessage">本当にキャンセルしますか？</div>
+      <div class="modal-desc" id="modalMessage" style="margin-bottom:12px;">本当にキャンセルしますか？</div>
+      
+      <div style="margin-bottom: 24px; background:#f9fafb; padding:12px; border-radius:8px; border:1px solid var(--border);">
+        <label style="display:block; font-size:13px; font-weight:600; margin-bottom:8px; color:var(--primary);">お客様からのキャンセル受付日時</label>
+        <input type="datetime-local" id="cancelRequestTime" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-family: 'Inter', sans-serif;">
+        <p style="font-size:11.5px; color:var(--text-sub); margin-top:8px; line-height:1.4;">
+          ※お客様からキャンセルの連絡を受けた日時を入力してください。<br>
+          ※この日時を基準に、キャンセルポリシー（返金額）が自動計算されます。
+        </p>
+      </div>
+
       <div class="modal-actions">
         <button class="btn-modal btn-modal-cancel" onclick="closeModal()">戻る</button>
         <button class="btn-modal btn-modal-danger" id="btnModalConfirm">キャンセル実行</button>
@@ -529,13 +539,20 @@
 
     function cancelBooking(reservationId) {
       // LINE等のアプリ内ブラウザで confirm がブロックされる現象を回避するため、独自モーダルを使用
-      document.getElementById('modalMessage').innerText = `予約番号: ${reservationId}\n本当にキャンセル処理を実行しますか？\n(返金額等はキャンセルポリシーに従って自動計算されます)`;
+      document.getElementById('modalMessage').innerText = `予約番号: ${reservationId}\n本当にキャンセル処理を実行しますか？`;
+      
+      // 現在時刻を datetime-local の初期値にセット (ローカルタイム)
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      document.getElementById('cancelRequestTime').value = now.toISOString().slice(0, 16);
+
       document.getElementById('confirmModal').classList.add('active');
       
       const confirmBtn = document.getElementById('btnModalConfirm');
       confirmBtn.onclick = function() {
         closeModal();
-        executeCancelAPI(reservationId);
+        const requestTimeStr = document.getElementById('cancelRequestTime').value;
+        executeCancelAPI(reservationId, requestTimeStr);
       };
     }
 
@@ -543,13 +560,17 @@
       document.getElementById('confirmModal').classList.remove('active');
     }
 
-    function executeCancelAPI(reservationId) {
+    function executeCancelAPI(reservationId, requestTimeStr) {
       showLoader(true);
+      
+      // ブラウザのローカルタイムをISO文字列(UTC)に変換して送信
+      const requestTimeISO = new Date(requestTimeStr).toISOString();
+
       callApi({
         action: 'admin_cancel',
         key: currentKey,
         reservation_id: reservationId,
-        request_time: new Date().toISOString()
+        request_time: requestTimeISO
       }, function(err, data) {
         if (err || data.error) {
           showLoader(false);
