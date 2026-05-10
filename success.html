@@ -48,6 +48,16 @@
         return;
       }
 
+      // 同じsession_idで既に処理済みの場合、キャッシュから表示（二重API呼び出し防止）
+      var cacheKey = 'parc_verified_' + sessionId;
+      var cached = null;
+      try { cached = JSON.parse(localStorage.getItem(cacheKey)); } catch(e) {}
+      if (cached && cached.success) {
+        if (LIFF_ID) { liff.init({ liffId: LIFF_ID }).catch(function() {}); }
+        showSuccess(cached);
+        return;
+      }
+
       if (LIFF_ID) {
         liff.init({ liffId: LIFF_ID }).catch(function() {});
       }
@@ -58,6 +68,8 @@
           showError(data ? data.message : '決済の確認に失敗しました');
           return;
         }
+        // 処理済みをローカルに保存（ページ再読み込み時の二重呼び出し防止）
+        try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch(e) {}
         showSuccess(data);
       });
     });
