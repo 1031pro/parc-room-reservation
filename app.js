@@ -46,6 +46,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }).catch(function(err) { console.warn('LIFF init error:', err); });
   }
 
+  // Stripeキャンセル戻り時: 仮押さえを即時解放
+  var urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('cancelled') === 'true' && urlParams.get('hold_event_id')) {
+    var holdId = urlParams.get('hold_event_id');
+    var releaseUrl = GAS_WEBAPP_URL + '?action=release_hold&hold_event_id=' + encodeURIComponent(holdId) + '&callback=__releaseHoldCb';
+    var s = document.createElement('script');
+    window.__releaseHoldCb = function() { delete window.__releaseHoldCb; };
+    s.src = releaseUrl;
+    document.body.appendChild(s);
+    // URLからパラメータを除去して履歴をクリーンに
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+
   // カレンダーを今月で初期化
   state.calendarMonth = new Date();
   renderCalendar();
