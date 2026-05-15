@@ -7,7 +7,7 @@ const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyisogXEUoK85r3C
 const LIFF_ID = '2009890948-YwXjSlGC';
 
 const PRICING = { weekday: 500, weekend: 600, midnight: 200 };
-const MIN_SLOTS = 2;
+const MIN_SLOTS = 1;
 const MAX_SLOTS = 10;
 const SLOT_MINUTES = 30;
 const DAY_NAMES = ['日', '月', '火', '水', '木', '金', '土'];
@@ -318,10 +318,21 @@ function changeDuration(delta) {
   var newCount = state.slotCount + delta;
   if (newCount < MIN_SLOTS || newCount > MAX_SLOTS) return;
   state.slotCount = newCount;
-  document.getElementById('durationDisplay').textContent =
-    (newCount * SLOT_MINUTES / 60) + '時間';
+  document.getElementById('durationDisplay').textContent = formatDurationDisplay(newCount);
   updateSlotHighlight();
   updatePriceDisplay();
+}
+
+/**
+ * スロット数を「○時間○分」形式に変換
+ */
+function formatDurationDisplay(slotCount) {
+  var totalMinutes = slotCount * SLOT_MINUTES;
+  var hours = Math.floor(totalMinutes / 60);
+  var minutes = totalMinutes % 60;
+  if (hours === 0) return minutes + '分';
+  if (minutes === 0) return hours + '時間';
+  return hours + '時間' + minutes + '分';
 }
 
 function updateSlotHighlight() {
@@ -355,7 +366,7 @@ function updatePriceDisplay() {
 
   var el = document.getElementById('priceDisplay');
   el.innerHTML = '<div class="price-amount">¥' + total.toLocaleString() + '</div>'
-    + '<div class="price-detail">' + (state.slotCount * SLOT_MINUTES / 60) + '時間 合計</div>';
+    + '<div class="price-detail">' + formatDurationDisplay(state.slotCount) + ' 合計</div>';
 }
 
 function goToStep3() {
@@ -432,12 +443,11 @@ function goToStep4() {
 function renderConfirmation() {
   var endMin = state.selectedStartMinutes + (state.slotCount * SLOT_MINUTES);
   var endStr = ('0' + Math.floor(endMin / 60)).slice(-2) + ':' + ('0' + (endMin % 60)).slice(-2);
-  var duration = state.slotCount * SLOT_MINUTES / 60;
 
   var html = '<div class="confirm-row"><span class="label">利用日</span><span class="value">'
     + state.date + '（' + DAY_NAMES[state.dayOfWeek] + '）</span></div>'
     + '<div class="confirm-row"><span class="label">時間</span><span class="value">'
-    + state.selectedStartTime + ' 〜 ' + endStr + '（' + duration + '時間）</span></div>'
+    + state.selectedStartTime + ' 〜 ' + endStr + '（' + formatDurationDisplay(state.slotCount) + '）</span></div>'
     + '<div class="confirm-row"><span class="label">人数</span><span class="value">'
     + state.people + '名</span></div>'
     + '<div class="confirm-row"><span class="label">お名前</span><span class="value">'

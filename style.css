@@ -258,6 +258,7 @@ input:focus, select:focus {
 .dur-btn:hover { background: var(--accent); color: white; }
 #durationDisplay { font-size: 20px; font-weight: 700; min-width: 80px; text-align: center; }
 .slot-range { text-align: center; font-size: 13px; color: var(--text-sub); margin-top: 8px; }
+.duration-note { text-align: center; font-size: 11px; color: var(--text-sub); margin-top: 6px; }
 
 /* 料金表示 */
 .price-display {
