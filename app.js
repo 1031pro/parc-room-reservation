@@ -23,7 +23,7 @@ let state = {
   prefetchDate: '',
   selectedStartMinutes: -1,
   selectedStartTime: '',
-  slotCount: MIN_SLOTS,
+  slotCount: 2, // デフォルト1時間（2スロット）。最小はMIN_SLOTS=1（30分）
   name: '',
   phone: '',
   people: '1',
