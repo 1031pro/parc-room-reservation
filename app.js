@@ -7,7 +7,7 @@ const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyisogXEUoK85r3C
 const LIFF_ID = '2009890948-YwXjSlGC';
 
 const PRICING = { weekday: 500, weekend: 600, midnight: 200 };
-const MIN_SLOTS = 2;
+const MIN_SLOTS = 1;
 const MAX_SLOTS = 10;
 const SLOT_MINUTES = 30;
 const DAY_NAMES = ['日', '月', '火', '水', '木', '金', '土'];
