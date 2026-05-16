@@ -316,6 +316,10 @@
     const ITEMS_PER_PAGE = 20;
     let currentPage = 1;
 
+    function escapeHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
     function callApi(params, callback) {
       const cbName = 'cb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
       let scriptEl;
@@ -515,11 +519,11 @@
 
         return `
           <tr>
-            <td class="cell-id">${r.reservationId}</td>
-            <td class="cell-date">${r.date}</td>
-            <td>${r.startTime} 〜 (${r.duration}h)</td>
-            <td class="cell-name">${r.name} <span style="color:#6b7280; font-size:12px;">(${r.people}名)</span></td>
-            <td>${r.phone}</td>
+            <td class="cell-id">${escapeHtml(r.reservationId)}</td>
+            <td class="cell-date">${escapeHtml(r.date)}</td>
+            <td>${escapeHtml(r.startTime)} 〜 (${escapeHtml(r.duration)}h)</td>
+            <td class="cell-name">${escapeHtml(r.name)} <span style="color:#6b7280; font-size:12px;">(${escapeHtml(r.people)}名)</span></td>
+            <td>${escapeHtml(r.phone)}</td>
             <td class="cell-price">¥${Number(r.price).toLocaleString()} <br><div style="margin-top:4px">${paymentBadge}</div></td>
             <td>${statusBadge}</td>
             <td>${actionBtn}</td>
@@ -685,94 +689,6 @@
       if (tabId === 'coupons' && allCoupons.length === 0) {
         loadCoupons();
       }
-    }
-
-    // --- Coupon Management ---
-    function loadCoupons() {
-      showLoader(true);
-      callApi({
-        action: 'admin_get_coupons',
-        key: currentKey
-      }, function(err, data) {
-        showLoader(false);
-        if (err || data.error) {
-          alert('クーポン取得エラー: ' + (data ? data.error : err.message));
-          return;
-        }
-        allCoupons = data.coupons || [];
-        renderCoupons();
-      });
-    }
-
-    function renderCoupons() {
-      const tbody = document.getElementById('couponTableBody');
-      tbody.innerHTML = '';
-      
-      if (allCoupons.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">クーポンが設定されていません</td></tr>';
-        return;
-      }
-      
-      let html = '';
-      allCoupons.forEach((c, index) => {
-        html += `
-          <tr data-index="${index}">
-            <td><input type="text" class="coupon-input" value="${c.code || ''}" placeholder="WELCOME10"></td>
-            <td>
-              <select class="coupon-input">
-                <option value="percent" ${c.type === 'percent' ? 'selected' : ''}>% OFF (パーセント)</option>
-                <option value="fixed" ${c.type === 'fixed' ? 'selected' : ''}>円 引き (固定額)</option>
-              </select>
-            </td>
-            <td><input type="number" class="coupon-input" value="${c.value || ''}" placeholder="10"></td>
-            <td><input type="date" class="coupon-input" value="${c.expires || ''}"></td>
-            <td>
-              <select class="coupon-input">
-                <option value="有効" ${c.status === '有効' ? 'selected' : ''}>有効</option>
-                <option value="無効" ${c.status === '無効' ? 'selected' : ''}>無効</option>
-              </select>
-            </td>
-            <td><button class="btn-action btn-danger" onclick="deleteCouponRow(${index})">削除</button></td>
-          </tr>
-        `;
-      });
-      tbody.innerHTML = html;
-    }
-
-    function addCouponRow() {
-      allCoupons.push({ code: '', type: 'percent', value: '', expires: '', status: '有効' });
-      renderCoupons();
-    }
-
-    function deleteCouponRow(index) {
-      if (!confirm('このクーポンを削除してよろしいですか？（保存ボタンを押すまで反映されません）')) return;
-      allCoupons.splice(index, 1);
-      renderCoupons();
-    }
-
-    function collectCouponsData() {
-      const rows = document.querySelectorAll('#couponTableBody tr[data-index]');
-      const newCoupons = [];
-      let hasError = false;
-
-      rows.forEach(row => {
-        const inputs = row.querySelectorAll('.coupon-input');
-        const code = inputs[0].value.trim().toUpperCase();
-        const type = inputs[1].value;
-        const value = parseInt(inputs[2].value);
-        const expires = inputs[3].value;
-        const status = inputs[4].value;
-
-        if (code && !isNaN(value)) {
-          if (!expires) {
-            alert(`クーポン「${code}」の有効期限が設定されていません。期限がない場合は 2099-12-31 などを入力してください。`);
-            hasError = true;
-          }
-          newCoupons.push({ code, type, value, expires, status });
-        }
-      });
-      
-      return hasError ? null : newCoupons;
     }
 
     function saveCoupons() {
