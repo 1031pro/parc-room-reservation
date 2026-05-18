@@ -387,14 +387,6 @@ function goToStep3() {
 // ============================================================
 function onPaymentChange() {
   state.payment = document.querySelector('input[name="payment"]:checked').value;
-  var couponArea = document.getElementById('couponArea');
-  couponArea.style.display = state.payment === 'stripe' ? 'block' : 'none';
-  if (state.payment !== 'stripe') {
-    state.coupon = '';
-    state.couponValid = false;
-    state.discount = 0;
-    state.finalPrice = state.totalPrice;
-  }
 }
 
 function applyCoupon() {
@@ -501,6 +493,7 @@ function submitReservation() {
   } else {
     params.action = 'submit';
     params.payment = 'onsite';
+    params.coupon = state.coupon;
     callGasApi(params, function(err, data) {
       if (err || !data.success) {
         alert(data ? data.message : 'エラーが発生しました');
